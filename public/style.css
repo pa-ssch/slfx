@@ -741,7 +741,8 @@ body.in-game .scorebar {
 }
 .tile-text {
   display: block;
-  width: 100%;
+  width: 100%; /* wird per JS auf die Zielbreite gesetzt */
+  margin: 0 auto;
   overflow-wrap: normal; /* nur an Leerzeichen umbrechen, die Schriftgröße passt sich an */
   text-wrap: balance; /* gleichmäßig lange Zeilen, wo der Browser es kann */
 }
@@ -752,12 +753,14 @@ body.in-game .scorebar {
     inset 0 0 0 2px #000,
     3px 3px 0 #000;
 }
-/* Haken als kleines Abzeichen mit weißem Grund, damit er über dem Text lesbar bleibt */
+/* Haken als kleines Abzeichen mit weißem Grund, damit er über dem Text lesbar bleibt.
+   Weit genug von der Ecke weg: die schiefe Rundung der Kachel (overflow: hidden)
+   würde ihn sonst je nach Kachel unterschiedlich beschneiden. */
 .tile[aria-pressed="true"]::after {
   content: "\2713";
   position: absolute;
-  top: 3px;
-  right: 3px;
+  top: 12px;
+  right: 12px;
   width: 24px;
   height: 24px;
   display: flex;

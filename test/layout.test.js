@@ -54,8 +54,29 @@ test.describe("Kacheltexte", () => {
         );
       const before = await info();
       const byText = Object.fromEntries(before.map((t) => [t.text, t]));
-      expect(byText["Land"].size).toBeGreaterThanOrEqual(28); // kurze Texte nutzen die Kachel
-      expect(byText["Tier"].size).toBeGreaterThanOrEqual(28);
+      expect(byText["Land"].size).toBeGreaterThanOrEqual(26); // kurze Texte groß, aber mit Obergrenze
+      expect(byText["Land"].size).toBeLessThanOrEqual(30);
+      expect(byText["Tier"].size).toBeGreaterThanOrEqual(26);
+      // Luft zum Rand: der Text füllt die Kachel nie ganz aus
+      const fill = await page.$$eval("#tiles .tile", (ts) =>
+        ts.map((t) => {
+          const r = t.firstChild.getBoundingClientRect();
+          const b = t.getBoundingClientRect();
+          return { text: t.firstChild.textContent, h: (t.firstChild.scrollHeight) / b.height };
+        }),
+      );
+      for (const f of fill) expect(f.h, f.text).toBeLessThanOrEqual(0.9);
+      // Haken-Abzeichen: auf jeder Kachel gleich groß und nicht beschnitten
+      for (const t of await page.$$("#tiles .tile")) await t.click();
+      const badges = await page.$$eval("#tiles .tile", (ts) =>
+        ts.map((t) => {
+          const cs = getComputedStyle(t, "::after");
+          return [cs.width, cs.height, cs.fontSize, cs.top, cs.right].join(" ");
+        }),
+      );
+      expect(new Set(badges).size).toBe(1);
+      expect(badges[0]).toBe("24px 24px 18px 12px 12px");
+      for (const t of await page.$$("#tiles .tile")) await t.click();
       expect(byText["Zeitschrift oder Zeitung"].size).toBeGreaterThanOrEqual(18); // lange: umgebrochen, nicht winzig
       expect(byText["Etwas, das nicht ins Handgepäck darf"].size).toBeGreaterThanOrEqual(14);
       // Kein Umbruch mitten im Wort: jedes Wort liegt in genau einem Rechteck

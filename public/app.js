@@ -636,21 +636,26 @@
   // Kacheltexte so groß wie möglich: größte Schriftgröße, bei der der Text (mit
   // Umbrüchen an Leerzeichen) in die Kachel passt, per Intervallhalbierung
   var TILE_MIN_FONT = 10;
-  var TILE_MAX_FONT = 48;
+  var TILE_MAX_FONT = 30; // Obergrenze, damit kurze Wörter nicht die Kachel sprengen
+  var TILE_FILL = 0.86; // Anteil der Kachel, den der Text höchstens füllt (Luft zum Rand)
   function fitTiles() {
     var tiles = document.querySelectorAll("#tiles .tile");
     for (var i = 0; i < tiles.length; i++) {
       var tile = tiles[i];
       var span = tile.firstChild;
       var cs = getComputedStyle(tile);
-      var maxW = tile.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
-      var maxH = tile.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
+      var maxW = (tile.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight)) * TILE_FILL;
+      var maxH = (tile.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom)) * TILE_FILL;
+      // Der Textblock bekommt genau die Zielbreite: so zeigt scrollWidth nur echten
+      // Überlauf (ein einzelnes zu langes Wort) und nicht die volle Kachelbreite
+      span.style.width = maxW + "px";
       var lo = TILE_MIN_FONT;
-      var hi = Math.max(lo, Math.min(TILE_MAX_FONT, Math.floor(maxH / 2.2)));
+      var hi = Math.max(lo, Math.min(TILE_MAX_FONT, Math.floor(maxH / 3)));
       while (lo < hi) {
         var mid = Math.ceil((lo + hi) / 2);
         tile.style.fontSize = mid + "px";
-        if (span.scrollHeight <= maxH && span.scrollWidth <= maxW) lo = mid;
+        // scrollWidth und clientWidth sind beide gerundet: gleich heißt kein Überlauf
+        if (span.scrollHeight <= maxH + 0.5 && span.scrollWidth <= span.clientWidth) lo = mid;
         else hi = mid - 1;
       }
       tile.style.fontSize = lo + "px";
