@@ -2,7 +2,7 @@
 // Strategie: erst Netz, bei Fehler Cache. So sind Änderungen sofort sichtbar,
 // und ohne Empfang läuft die zuletzt geladene Version weiter.
 // Bei Änderungen an den Dateien unten die VERSION hochzählen.
-var VERSION = "slfx-v1";
+var VERSION = "slfx-v2";
 var FILES = [
   "./",
   "index.html",

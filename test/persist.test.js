@@ -56,7 +56,9 @@ test.describe("Neuladen", () => {
     await seedGame(page, makeGame({ names: ["A", "B"], roundNo: 3, phase: "wheel" }));
     await page.click("#resumeBtn");
     await expect(page.locator("#wheel.active")).toBeVisible();
-    await expect(page.locator("#spinBtn")).toHaveText("Drehen");
+    await expect(page.locator("#spinBtn")).toHaveText("Stopp");
+    await expect(page.locator("#spinBtn")).toBeEnabled();
+    await expect(page.locator("#goBtn")).toBeHidden();
     expect((await readGame(page)).current).toBe(1);
   });
 

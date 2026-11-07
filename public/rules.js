@@ -39,9 +39,7 @@ var RULES = {
     MIN_TURNS: 2, // Auslauf: so viele ganze Umdrehungen mindestens ...
     MAX_TURNS: 4, // ... und höchstens, zufällig
     MIN_RUNOUT_MS: 1800, // Dauer des Auslaufs mindestens ...
-    MAX_RUNOUT_MS: 3000, // ... und höchstens, zufällig
-    MODE_MIN_SPIN_MS: 1200, // Moduswalze dreht so lange frei, bevor sie ausläuft ...
-    MODE_MAX_SPIN_MS: 2200, // ... zufällig bis hierhin
+    MAX_RUNOUT_MS: 3000, // ... und höchstens, zufällig; beide Walzen laufen gleich lang aus
     SPEED: 14, // Zellen je Sekunde beim freien Drehen
   },
 

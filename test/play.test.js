@@ -90,6 +90,42 @@ test.describe("Countdown und Runde", () => {
   });
 });
 
+test.describe("Vor Ablauf der Zeit fertig", () => {
+  test("„Fertig“ beendet die Runde sofort mit den markierten Kacheln", async ({ page }) => {
+    await playRound(page, ready({ round: { mode: "normal" } }));
+    await expect(page.locator("#doneBtn")).toHaveText("Fertig");
+    for (const i of [1, 2, 6]) await tile(page, i).click();
+    await page.clock.runFor(10000);
+    await page.click("#doneBtn");
+    await expect(page.locator("#score.active")).toBeVisible();
+    await expect(page.locator("#scoreValue")).toHaveText(`3 von ${N}`);
+    const game = await readGame(page);
+    expect(game.phase).toBe("score");
+    expect(game.round.terms).toBe(3);
+    await page.clock.runFor(120000); // der alte Timer darf nichts mehr tun
+    await expect(page.locator("#score.active")).toBeVisible();
+    await page.click("#scoreBtn");
+    expect(await points(page)).toEqual(["3", "0"]);
+  });
+
+  test("„Fertig“ bei Alles oder nichts ohne alle acht: null Punkte", async ({ page }) => {
+    await playRound(page, ready({ round: { mode: "allornothing" } }));
+    await tile(page, 0).click();
+    await page.click("#doneBtn");
+    await expect(page.locator("#scorePoints")).toHaveText("0 Punkte");
+  });
+
+  test("Neuladen in der Runde: „Fertig“ bleibt verfügbar", async ({ page }) => {
+    await playRound(page, ready({ round: { mode: "double" } }));
+    await tile(page, 0).click();
+    await page.reload();
+    await expect(page.locator("#play.active")).toBeVisible();
+    await expect(page.locator("#doneBtn")).toHaveText("Fertig");
+    await page.click("#doneBtn");
+    await expect(page.locator("#scorePoints")).toHaveText("+2 Punkte");
+  });
+});
+
 test.describe("Modus Normal und Doppelt", () => {
   for (const key of ["normal", "double"]) {
     test(`${M[key].name}: ${M[key].points} Punkt(e) je Begriff, vorbelegt aus den Kacheln, korrigierbar`, async ({ page }) => {

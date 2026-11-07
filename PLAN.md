@@ -39,11 +39,12 @@ Spiellogik dieses Spiels.
    Danach läuft die Walze eine zufällige Zahl ganzer Umdrehungen weiter und bremst bis zum
    Ergebnis ab. Q, X und Y haben Gewicht 0 und stehen nicht auf der Walze (Konstante, bei
    Bedarf wieder einschaltbar). Der Buchstabe der Vorrunde ist ausgeschlossen.
-4. **Moduswalze.** Startet automatisch nach der Buchstabenwalze, Ergebnis vorab gezogen,
-   läuft eine zufällige Zeit und bremst ab. Danach zeigt die Ansicht Buchstabe, Modus und
-   Zeit mit Erklärung und einem Button „Los“, erst der startet den Countdown
-   (Annahme: das Team soll den Modus lesen können, bevor die Zeit läuft).
-   „Alle raten mit“ ist bei einem Team nicht auf der Walze.
+4. **Moduswalze.** Rückmeldung vom 7.11.2026: Beide Walzen sitzen in einem Kasten, laufen
+   von selbst an, sobald die Ansicht erscheint, und beim Tipp auf „Stopp“ werden Buchstabe
+   und Modus zusammen gezogen; beide laufen gleich lang aus und halten gemeinsam. Danach
+   zeigt die Ansicht Buchstabe, Modus und Zeit mit Erklärung und einem Button „Los“, erst
+   der startet den Countdown (Annahme: das Team soll den Modus lesen können, bevor die
+   Zeit läuft). „Alle raten mit“ ist bei einem Team nicht auf der Walze.
 5. **Spielstand** in `slfx-game` (`v: 1`): Teams mit Punkten, Zielpunkte, gewählte Decks,
    aktives Team, Rundenzähler, letzter Buchstabe, Phase (`turn`, `wheel`, `play`, `score`,
    `end`) und die laufende Runde (Buchstabe, Modus, acht Kategorien, Markierungen, Endzeit
@@ -68,7 +69,9 @@ Spiellogik dieses Spiels.
    Skizzen-Look statt `window.confirm`, damit sie testbar und gestaltbar sind. Der Eck-Button
    führt zur Startseite, ohne den Spielstand zu löschen (dort „Weiterspielen“).
 10. **Timer-Ende.** Vibration, Kacheln eingefroren, „Zeit!“ statt Timer, Button „Weiter“
-    zur Punkteansicht. Die letzten 5 Sekunden sind invertiert hervorgehoben.
+    zur Punkteansicht. Die letzten 5 Sekunden sind invertiert hervorgehoben. Rückmeldung
+    vom 7.11.2026: Während der Runde gibt es einen Button „Fertig“, der die Runde vor Ablauf
+    der Zeit beendet und direkt zur Punkteansicht führt.
 11. **Layout der Runde.** Hochformat: Buchstabe und Timer oben, Kacheln als Raster 2×4
     darunter. Querformat: Buchstabe und Timer links, Kacheln 2×4 rechts. Kacheln füllen den
     Rest der Ansicht innerhalb der Safe Area; die Kacheltexte werden per JS so verkleinert,
@@ -94,7 +97,7 @@ Spiellogik dieses Spiels.
 | Alles oder nichts | 45 s, alle acht = 10 Punkte, sonst 0, Gewicht 2 |
 | Alle raten mit | kein Timer, 1 Punkt je Begriff an das schnellste Team, Gewicht 2, ab 2 Teams |
 | Buchstaben | A 6, B 8, C 2, D 5, E 5, F 6, G 6, H 7, I 2, J 2, K 8, L 5, M 7, N 3, O 2, P 5, Q 0, R 5, S 10, T 5, U 2, V 3, W 6, X 0, Y 0, Z 3 |
-| Walze | Auto-Stopp nach 4 s, Auslauf 2 bis 4 Umdrehungen in 1,8 bis 3 s; Moduswalze 1,2 bis 2,2 s |
+| Walze | läuft von selbst an, Auto-Stopp nach 4 s, Auslauf beider Walzen 2 bis 4 Umdrehungen in 1,8 bis 3 s |
 | Countdown | 3 s |
 | Hervorhebung | letzte 5 s |
 

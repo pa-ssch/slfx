@@ -379,7 +379,8 @@
     }
     this.raf = requestAnimationFrame(frame);
   };
-  Reel.prototype.stop = function (index, onDone) {
+  // Auslaufen bis zum Ziel: zufällig viele ganze Umdrehungen in der vorgegebenen Dauer
+  Reel.prototype.stop = function (index, duration, onDone) {
     var self = this;
     var W = RULES.WHEEL;
     this.cancel();
@@ -392,7 +393,6 @@
     var ahead = (index - (start - this.n) + this.n) % this.n; // Weg bis zum Ziel, 0 bis n
     var turns = W.MIN_TURNS + Math.floor(Math.random() * (W.MAX_TURNS - W.MIN_TURNS + 1));
     var dist = ahead + turns * this.n;
-    var duration = W.MIN_RUNOUT_MS + Math.random() * (W.MAX_RUNOUT_MS - W.MIN_RUNOUT_MS);
     var t0 = null;
     this.state = "runout";
     function frame(t) {
@@ -416,14 +416,12 @@
   var modeReel = null;
   var spinState = "idle"; // idle | spinning | stopping
   var autoStopTimer = null;
-  var modeTimer = null;
 
   function stopWheel() {
     if (letterReel) letterReel.cancel();
     if (modeReel) modeReel.cancel();
     clearTimeout(autoStopTimer);
-    clearTimeout(modeTimer);
-    autoStopTimer = modeTimer = null;
+    autoStopTimer = null;
     spinState = "idle";
   }
 
@@ -435,7 +433,8 @@
     letterReel = new Reel($("letterReel"), letters);
     modeReel = new Reel($("modeReel"), modes.map(modeLabel));
     var spinBtn = $("spinBtn");
-    if (game.phase === "ready" && game.round) {
+    var settled = game.phase === "ready" && game.round;
+    if (settled) {
       letterReel.set(letters.indexOf(game.round.letter));
       modeReel.set(modes.indexOf(game.round.mode));
       showWheelResult();
@@ -443,7 +442,7 @@
       game.phase = "wheel";
       game.round = null;
       saveGame();
-      spinBtn.textContent = "Drehen";
+      spinBtn.textContent = "Stopp";
       spinBtn.disabled = false;
       spinBtn.hidden = false;
       $("goBtn").hidden = true;
@@ -454,55 +453,47 @@
     // Nach dem Einblenden sind die Zellhöhen bekannt: Position nachziehen
     letterReel.apply();
     modeReel.apply();
+    // Die Walzen laufen von selbst an, sobald die Ansicht erscheint
+    if (!settled) startSpin();
   }
 
+  // Beide Walzen laufen zusammen an. Bei reduzierter Bewegung steht das Ergebnis sofort.
   function startSpin() {
-    var letters = wheelLetters();
     if (prefersReducedMotion()) {
-      // Keine Animation: Ergebnis sofort
       spinState = "stopping";
       $("spinBtn").disabled = true;
       var letter = pickLetter(game.lastLetter);
-      letterReel.set(letters.indexOf(letter));
-      onLetter(letter);
+      var key = pickMode(game.teams.length);
+      letterReel.set(wheelLetters().indexOf(letter));
+      modeReel.set(wheelModes(game.teams.length).indexOf(key));
+      finishWheel(letter, key);
       return;
     }
     spinState = "spinning";
     $("spinBtn").textContent = "Stopp";
     letterReel.spin();
+    modeReel.spin();
     autoStopTimer = setTimeout(stopSpin, RULES.WHEEL.AUTO_STOP_MS);
   }
 
+  // Beim Tipp auf "Stopp" stehen Buchstabe und Modus fest; beide Walzen laufen
+  // danach gleich lang sichtbar aus und halten gemeinsam auf dem Ergebnis.
   function stopSpin() {
     if (spinState !== "spinning") return;
     clearTimeout(autoStopTimer);
     autoStopTimer = null;
     spinState = "stopping";
     $("spinBtn").disabled = true;
-    // Das Ergebnis steht jetzt fest, die Walze läuft nur noch sichtbar aus
     var letter = pickLetter(game.lastLetter);
-    letterReel.stop(wheelLetters().indexOf(letter), function () {
-      onLetter(letter);
-    });
-  }
-
-  function onLetter(letter) {
-    $("wheelResult").textContent = "Buchstabe " + letter;
-    var modes = wheelModes(game.teams.length);
     var key = pickMode(game.teams.length);
-    if (prefersReducedMotion()) {
-      modeReel.set(modes.indexOf(key));
-      finishWheel(letter, key);
-      return;
-    }
-    modeReel.spin();
     var W = RULES.WHEEL;
-    var spinMs = W.MODE_MIN_SPIN_MS + Math.random() * (W.MODE_MAX_SPIN_MS - W.MODE_MIN_SPIN_MS);
-    modeTimer = setTimeout(function () {
-      modeReel.stop(modes.indexOf(key), function () {
-        finishWheel(letter, key);
-      });
-    }, spinMs);
+    var duration = W.MIN_RUNOUT_MS + Math.random() * (W.MAX_RUNOUT_MS - W.MIN_RUNOUT_MS);
+    var pending = 2;
+    function done() {
+      if (--pending === 0) finishWheel(letter, key);
+    }
+    letterReel.stop(wheelLetters().indexOf(letter), duration, done);
+    modeReel.stop(wheelModes(game.teams.length).indexOf(key), duration, done);
   }
 
   function finishWheel(letter, key) {
@@ -638,7 +629,7 @@
     var t = $("timer");
     t.className = "timer";
     t.hidden = false;
-    $("doneBtn").hidden = true;
+    $("doneBtn").textContent = "Fertig";
     show("play");
     fitTiles();
     requestAnimationFrame(fitTiles);
@@ -677,7 +668,13 @@
     t.className = "timer over";
     var tiles = document.querySelectorAll("#tiles .tile");
     for (var i = 0; i < tiles.length; i++) tiles[i].disabled = true;
-    $("doneBtn").hidden = false;
+    $("doneBtn").textContent = "Weiter";
+  }
+
+  // "Fertig" vor Ablauf der Zeit: Runde beenden und direkt zur Punkteansicht
+  function onDone() {
+    if (game.phase === "play") endPlay("Fertig!");
+    showScore();
   }
 
   // ---------- Alle raten mit ----------
@@ -1188,12 +1185,9 @@
     startGame();
   });
   $("readyBtn").addEventListener("click", showWheel);
-  $("spinBtn").addEventListener("click", function () {
-    if (spinState === "idle") startSpin();
-    else if (spinState === "spinning") stopSpin();
-  });
+  $("spinBtn").addEventListener("click", stopSpin);
   $("goBtn").addEventListener("click", startCountdown);
-  $("doneBtn").addEventListener("click", showScore);
+  $("doneBtn").addEventListener("click", onDone);
   $("evSkip").addEventListener("click", function () {
     awardTo(null);
   });

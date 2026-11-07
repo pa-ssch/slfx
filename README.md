@@ -17,14 +17,14 @@ Stadt-Land-Fluss selbst ist gemeinfrei.
 1. **Ein Handy, 1 bis 5 Teams.** Unter „Neues Spiel“ Teams benennen, Zielpunkte
    wählen (Vorgabe 20) und Decks ankreuzen. Ein Team allein spielt kooperativ
    und sammelt Punkte.
-2. **Handy weitergeben.** Das Team, das dran ist, tippt auf „Bereit“, dann auf
-   **Drehen** und **Stopp**. Die Buchstabenwalze liefert den Buchstaben, direkt
-   danach dreht die Moduswalze von selbst und bestimmt Modus und Zeit.
+2. **Handy weitergeben.** Das Team, das dran ist, tippt auf „Bereit“. Die
+   beiden Walzen in einem Kasten laufen sofort los; ein Tipp auf **Stopp**
+   liefert Buchstaben und Modus mit Zeit, beide Walzen laufen gemeinsam aus.
 3. **Runde.** Nach „Los“ und einem Countdown erscheinen acht Kategorien als
    Kacheln. Das Team ruft zu jeder einen Begriff, der mit dem Buchstaben beginnt,
    und tippt die geschafften Kacheln an. Die anderen Teams passen auf. Die
    letzten fünf Sekunden sind hervorgehoben, am Ende vibriert das Handy und die
-   Kacheln frieren ein.
+   Kacheln frieren ein. Wer vorher durch ist, tippt auf **Fertig**.
 4. **Punkte.** Das Handy belegt die Punkte aus den Kacheln vor. Nach Diskussion
    lässt sich die Zahl mit Plus und Minus korrigieren, dann „Punkte eintragen“.
    Die Punkteleiste oben ist auf allen Spiel-Ansichten zu sehen.
@@ -49,11 +49,12 @@ Markierungen) oder zum Rundenstart desselben Teams. Punkte gehen nie verloren.
 
 ### Walze
 
-Beim Tipp auf „Stopp“ (oder nach 4 Sekunden von selbst) wird der Buchstabe in
-diesem Moment mit einem einzigen Zufallswert gezogen, unabhängig davon, wo die
-Walze gerade steht. Danach läuft sie eine zufällige Zahl ganzer Umdrehungen
-weiter und bremst sichtbar bis zum Ergebnis ab. Der Zeitpunkt des Tippens kann
-das Ergebnis also nicht beeinflussen. Häufige Anfangsbuchstaben kommen öfter,
+Die Walzen laufen von selbst an, sobald die Ansicht erscheint. Beim Tipp auf
+„Stopp“ (oder nach 4 Sekunden von selbst) werden Buchstabe und Modus in diesem
+Moment mit je einem Zufallswert gezogen, unabhängig davon, wo die Walzen gerade
+stehen. Danach laufen beide gleich lang aus, jede eine zufällige Zahl ganzer
+Umdrehungen, und halten gemeinsam auf dem Ergebnis. Der Zeitpunkt des Tippens
+kann das Ergebnis also nicht beeinflussen. Häufige Anfangsbuchstaben kommen öfter,
 Q, X und Y stehen nicht auf der Walze, und der Buchstabe der Vorrunde ist
 ausgeschlossen. Bei `prefers-reduced-motion` gibt es keine Animation, das
 Ergebnis steht sofort.
@@ -73,8 +74,7 @@ Tests aus derselben Datei gelesen:
 | `LETTER_WEIGHTS` | A 6, B 8, C 2, D 5, E 5, F 6, G 6, H 7, I 2, J 2, K 8, L 5, M 7, N 3, O 2, P 5, Q 0, R 5, S 10, T 5, U 2, V 3, W 6, X 0, Y 0, Z 3 (0 = nicht auf der Walze) |
 | `WHEEL.AUTO_STOP_MS` | 4000 |
 | `WHEEL.MIN_TURNS`, `MAX_TURNS` | 2 bis 4 ganze Umdrehungen Auslauf |
-| `WHEEL.MIN_RUNOUT_MS`, `MAX_RUNOUT_MS` | 1800 bis 3000 ms Auslauf |
-| `WHEEL.MODE_MIN_SPIN_MS`, `MODE_MAX_SPIN_MS` | 1200 bis 2200 ms freie Drehung der Moduswalze |
+| `WHEEL.MIN_RUNOUT_MS`, `MAX_RUNOUT_MS` | 1800 bis 3000 ms Auslauf, für beide Walzen gleich |
 | `WHEEL.SPEED` | 14 Zellen je Sekunde |
 | `MODES` | Name, Sekunden, Punkte bzw. Bonus, Gewicht, Mindestteams, Erklärungstext je Modus (siehe oben) |
 
@@ -180,13 +180,13 @@ Die Tests in `test/` laufen in drei Projekten (Pixel 7, iPhone 13, Desktop Chrom
 - `app.test.js`: Startseite, Anleitung, Spiel anlegen (Teamanzahl, Namen,
   Zielpunkte, Deck-Auswahl, Vorauswahl, Persistenz), Rundenstart, Punkteleiste,
   Rückfragen.
-- `wheel.test.js`: Walzen mit gemocktem `Math.random`: Ergebnis unabhängig vom
-  Stopp-Zeitpunkt, Walze steht am Ende auf dem Ergebnis, Auto-Stopp, Moduswalze
-  ohne weiteren Tipp, Reduced-Motion-Pfad, Gewichte der Buchstaben und Modi,
+- `wheel.test.js`: Walzen mit gemocktem `Math.random`: laufen beim Betreten von
+  selbst an, Ergebnis unabhängig vom Stopp-Zeitpunkt, beide halten gemeinsam auf
+  dem Ergebnis, Auto-Stopp, Reduced-Motion-Pfad, Gewichte der Buchstaben und Modi,
   kein Buchstabe doppelt in Folge, bei einem Team kein „Alle raten mit“.
 - `play.test.js`: Countdown, Kacheln, Timer mit Hervorhebung und Vibration,
-  jede Modus-Logik inklusive Alles-oder-nichts-Abbruch und
-  Alle-raten-mit-Vergabe, Punkte vorbelegen und korrigieren, Spielende mit
+  „Fertig“ vor Ablauf der Zeit, jede Modus-Logik inklusive
+  Alles-oder-nichts-Abbruch und Alle-raten-mit-Vergabe, Punkte vorbelegen und korrigieren, Spielende mit
   vollem Durchgang, Gleichstand, ein Team, „Nochmal“.
 - `persist.test.js`: Neuladen in jeder Phase, kaputter Local Storage je
   Eintrag, kaputte Runde ohne Punktverlust, keine Wiederholung der Kategorien.

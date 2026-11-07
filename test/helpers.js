@@ -123,11 +123,10 @@ async function createGame(page, o = {}) {
   await expect(page.locator("#turn.active")).toBeVisible();
 }
 
-// Von "Bereit" bis zur Walze und sofort zum Ergebnis (reduzierte Bewegung: keine Animation)
+// Von "Bereit" zur Walze: bei reduzierter Bewegung steht das Ergebnis sofort
 async function spinInstant(page) {
   await page.emulateMedia({ reducedMotion: "reduce" });
   if (await page.locator("#turn.active").isVisible()) await page.click("#readyBtn");
-  await page.click("#spinBtn");
   await expect(page.locator("#goBtn")).toBeVisible();
   return readGame(page);
 }

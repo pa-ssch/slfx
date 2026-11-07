@@ -76,12 +76,13 @@
           <ol>
             <li><b>Ein Handy, bis zu fünf Teams.</b> Die Teams spielen reihum, das Handy
               wird weitergegeben.</li>
-            <li>Das Team, das dran ist, tippt auf <b>Drehen</b> und <b>Stopp</b>: Die Walze
-              liefert einen <b>Buchstaben</b>, direkt danach dreht sich die zweite Walze und
-              bestimmt den <b>Modus</b> mit der Zeit.</li>
+            <li>Das Team, das dran ist, tippt auf <b>Bereit</b>. Die beiden Walzen laufen
+              los, ein Tipp auf <b>Stopp</b> liefert den <b>Buchstaben</b> und den
+              <b>Modus</b> mit der Zeit.</li>
             <li>Nach dem Countdown erscheinen <b>acht Kategorien</b>. Das Team ruft zu jeder
               einen Begriff, der mit dem Buchstaben beginnt, und tippt die geschafften
-              Kacheln an. Die anderen Teams passen auf.</li>
+              Kacheln an. Die anderen Teams passen auf. Wer vor der Zeit durch ist, tippt
+              auf <b>Fertig</b>.</li>
             <li>Nach der Zeit zählt das Handy die Punkte. Wer mag, korrigiert mit
               Plus und Minus, dann <b>Punkte eintragen</b>.</li>
             <li>Die Modi: <b>Normal</b> (ein Punkt je Begriff), <b>Doppelt</b> (zwei Punkte,
@@ -142,16 +143,16 @@
 
       <!-- Walzen: Buchstabe und Modus -->
       <section id="wheel" class="screen game">
-        <div class="reels">
-          <div class="reel-box letter-box" aria-hidden="true">
+        <div class="reel-box" aria-hidden="true">
+          <div class="reel-col letter-col">
             <div class="reel" id="letterReel"></div>
           </div>
-          <div class="reel-box mode-box" aria-hidden="true">
+          <div class="reel-col mode-col">
             <div class="reel" id="modeReel"></div>
           </div>
         </div>
         <p class="hint result" id="wheelResult" aria-live="polite"></p>
-        <button type="button" class="btn big" id="spinBtn">Drehen</button>
+        <button type="button" class="btn big" id="spinBtn">Stopp</button>
         <button type="button" class="btn big" id="goBtn" hidden>Los</button>
       </section>
 
@@ -165,7 +166,7 @@
         <div class="play-head">
           <div class="letter" id="playLetter"></div>
           <div class="timer" id="timer" aria-live="off"></div>
-          <button type="button" class="btn" id="doneBtn" hidden>Weiter</button>
+          <button type="button" class="btn" id="doneBtn">Fertig</button>
         </div>
         <div class="tiles" id="tiles" role="group" aria-label="Kategorien"></div>
       </section>
