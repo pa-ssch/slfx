@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'"
+    >
+    <title>Stadt Land Fluss Extrem</title>
+    <meta
+      name="description"
+      content="Stadt Land Fluss Extrem – Partyspiel für ein geteiltes Handy: Teams spielen reihum gegen die Uhr, Buchstabe und Modus kommen von der Walze. Ohne App, ohne Anmeldung, direkt im Browser."
+    >
+    <link rel="canonical" href="https://slfx.9xb.de/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Stadt Land Fluss Extrem">
+    <meta property="og:title" content="Stadt Land Fluss Extrem">
+    <meta property="og:description" content="Partyspiel für ein geteiltes Handy: Teams spielen reihum gegen die Uhr, Buchstabe und Modus kommen von der Walze.">
+    <meta property="og:url" content="https://slfx.9xb.de/">
+    <meta property="og:locale" content="de_DE">
+    <meta property="og:image" content="https://slfx.9xb.de/icons/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Stadt Land Fluss Extrem – Ein Handy, bis zu fünf Teams, gegen die Uhr">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="color-scheme" content="light">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="SLF Extrem">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body class="app">
+    <!-- Punkteleiste: auf allen Spiel-Ansichten sichtbar (body.in-game), mit Eck-Button -->
+    <header class="scorebar" id="scorebar">
+      <div class="scores" id="scores" aria-live="polite" aria-label="Punktestand"></div>
+      <button type="button" class="corner in-bar" id="quitBtn" aria-label="Zur Startseite">&#8635;</button>
+    </header>
+
+    <main>
+      <!-- Startseite -->
+      <section id="home" class="screen active">
+        <h1>Stadt Land Fluss Extrem</h1>
+        <button type="button" class="btn big" id="resumeBtn" hidden>Weiterspielen</button>
+        <button type="button" class="btn" id="newBtn">Neues Spiel</button>
+        <button type="button" class="btn small-btn" data-go="rules">Wie geht das?</button>
+        <p class="small" id="catcount"></p>
+        <a class="small" href="impressum.html">Impressum &amp; Datenschutz</a>
+
+        <!-- Hinweis "App hinzufügen": Android/Chrome mit echtem Install-Dialog,
+             iOS nur mit Anleitung. Wird per app.js ein- und ausgeblendet. -->
+        <div class="install" id="install">
+          <p class="install-text" id="installPrompt" hidden>
+            Offline spielen? Stadt Land Fluss Extrem als App hinzufügen.
+          </p>
+          <p class="install-text" id="installIos" hidden>
+            Offline spielen? Tippe unten auf <b>Teilen</b> und dann auf
+            <b>„Zum Home-Bildschirm“</b>.
+          </p>
+          <div class="install-actions">
+            <button type="button" class="btn small-btn" id="installBtn" hidden>Hinzufügen</button>
+            <button type="button" class="btn small-btn" id="installDismiss">Nein, danke</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Spielerklärung -->
+      <section id="rules" class="screen scroll">
+        <div class="stack rules">
+          <h2>So geht's</h2>
+          <ol>
+            <li><b>Ein Handy, bis zu fünf Teams.</b> Die Teams spielen reihum, das Handy
+              wird weitergegeben.</li>
+            <li>Das Team, das dran ist, tippt auf <b>Drehen</b> und <b>Stopp</b>: Die Walze
+              liefert einen <b>Buchstaben</b>, direkt danach dreht sich die zweite Walze und
+              bestimmt den <b>Modus</b> mit der Zeit.</li>
+            <li>Nach dem Countdown erscheinen <b>acht Kategorien</b>. Das Team ruft zu jeder
+              einen Begriff, der mit dem Buchstaben beginnt, und tippt die geschafften
+              Kacheln an. Die anderen Teams passen auf.</li>
+            <li>Nach der Zeit zählt das Handy die Punkte. Wer mag, korrigiert mit
+              Plus und Minus, dann <b>Punkte eintragen</b>.</li>
+            <li>Die Modi: <b>Normal</b> (ein Punkt je Begriff), <b>Doppelt</b> (zwei Punkte,
+              weniger Zeit), <b>Alles oder nichts</b> (alle acht oder nichts) und
+              <b>Alle raten mit</b> (ohne Uhr, Begriff für Begriff, das schnellste Team
+              bekommt den Punkt).</li>
+            <li>Erreicht ein Team die <b>Zielpunkte</b>, wird der Durchgang zu Ende gespielt,
+              bis alle gleich oft dran waren. Dann steht der Sieger fest.</li>
+          </ol>
+          <p class="hint">Das Spiel bleibt auf dem Handy gespeichert: Wird die Seite
+            zwischendurch neu geladen, geht es an derselben Stelle weiter.</p>
+          <button type="button" class="btn" data-go="home">Alles klar</button>
+        </div>
+      </section>
+
+      <!-- Spiel anlegen -->
+      <section id="setup" class="screen scroll">
+        <button type="button" class="corner" data-go="home" aria-label="Zurück">&#8635;</button>
+        <form class="stack setup" id="setupForm" autocomplete="off" novalidate>
+          <h2>Neues Spiel</h2>
+
+          <div class="field">
+            <span class="label" id="teamsLabel">Teams</span>
+            <div class="stepper" role="group" aria-labelledby="teamsLabel">
+              <button type="button" class="step" id="teamMinus" aria-label="Weniger Teams">&minus;</button>
+              <output class="value" id="teamCount" aria-live="polite">2</output>
+              <button type="button" class="step" id="teamPlus" aria-label="Mehr Teams">+</button>
+            </div>
+          </div>
+          <div class="teams" id="teams"></div>
+
+          <div class="field">
+            <label class="label" for="target">Zielpunkte</label>
+            <div class="stepper">
+              <button type="button" class="step" id="targetMinus" aria-label="Weniger Zielpunkte">&minus;</button>
+              <input type="number" id="target" inputmode="numeric" min="5" max="200" step="5" value="20">
+              <button type="button" class="step" id="targetPlus" aria-label="Mehr Zielpunkte">+</button>
+            </div>
+          </div>
+
+          <div class="field">
+            <span class="label" id="decksLabel">Decks</span>
+            <div class="categories" id="decks" role="group" aria-labelledby="decksLabel"></div>
+            <p class="small" id="poolcount"></p>
+          </div>
+
+          <button type="submit" class="btn big" id="startBtn">Los geht's</button>
+        </form>
+      </section>
+
+      <!-- Rundenstart: Handy weitergeben -->
+      <section id="turn" class="screen game">
+        <p class="hint">Handy weitergeben!</p>
+        <div class="big-team" id="turnTeam"></div>
+        <p class="small" id="turnInfo"></p>
+        <button type="button" class="btn big" id="readyBtn">Bereit</button>
+      </section>
+
+      <!-- Walzen: Buchstabe und Modus -->
+      <section id="wheel" class="screen game">
+        <div class="reels">
+          <div class="reel-box letter-box" aria-hidden="true">
+            <div class="reel" id="letterReel"></div>
+          </div>
+          <div class="reel-box mode-box" aria-hidden="true">
+            <div class="reel" id="modeReel"></div>
+          </div>
+        </div>
+        <p class="hint result" id="wheelResult" aria-live="polite"></p>
+        <button type="button" class="btn big" id="spinBtn">Drehen</button>
+        <button type="button" class="btn big" id="goBtn" hidden>Los</button>
+      </section>
+
+      <!-- Countdown -->
+      <section id="countdown" class="screen game">
+        <div class="countdown" id="countNum">3</div>
+      </section>
+
+      <!-- Runde mit Timer und Kacheln -->
+      <section id="play" class="screen game play">
+        <div class="play-head">
+          <div class="letter" id="playLetter"></div>
+          <div class="timer" id="timer" aria-live="off"></div>
+          <button type="button" class="btn" id="doneBtn" hidden>Weiter</button>
+        </div>
+        <div class="tiles" id="tiles" role="group" aria-label="Kategorien"></div>
+      </section>
+
+      <!-- Modus "Alle raten mit": ein Begriff nach dem anderen -->
+      <section id="everyone" class="screen game everyone">
+        <div class="ev-head">
+          <div class="letter small-letter" id="evLetter"></div>
+          <div class="small" id="evProgress"></div>
+        </div>
+        <div class="ev-word-box" id="evWordBox">
+          <div class="word" id="evWord"></div>
+        </div>
+        <div class="ev-teams" id="evTeams"></div>
+        <button type="button" class="btn small-btn" id="evSkip">Überspringen</button>
+      </section>
+
+      <!-- Rundenende: Punkte -->
+      <section id="score" class="screen game scroll">
+        <div class="stack">
+          <h2 id="scoreTitle"></h2>
+          <p class="hint" id="scoreInfo"></p>
+          <div class="stepper" id="scoreStepper" role="group" aria-label="Geschaffte Begriffe">
+            <button type="button" class="step" id="scoreMinus" aria-label="Ein Begriff weniger">&minus;</button>
+            <output class="value" id="scoreValue" aria-live="polite"></output>
+            <button type="button" class="step" id="scorePlus" aria-label="Ein Begriff mehr">+</button>
+          </div>
+          <div class="points" id="scorePoints"></div>
+          <ul class="summary" id="scoreSummary"></ul>
+          <button type="button" class="btn big" id="scoreBtn">Punkte eintragen</button>
+        </div>
+      </section>
+
+      <!-- Spielende -->
+      <section id="end" class="screen scroll">
+        <div class="stack">
+          <h2 id="endTitle"></h2>
+          <ol class="ranking" id="ranking"></ol>
+          <button type="button" class="btn" id="againBtn">Nochmal mit denselben Teams</button>
+          <button type="button" class="btn" id="endNewBtn">Neues Spiel</button>
+        </div>
+      </section>
+    </main>
+
+    <!-- Rückfrage -->
+    <dialog class="sheet" id="confirm" aria-labelledby="confirmText">
+      <p class="hint" id="confirmText"></p>
+      <div class="install-actions">
+        <button type="button" class="btn small-btn" id="confirmYes">Ja</button>
+        <button type="button" class="btn small-btn" id="confirmNo" autofocus>Abbrechen</button>
+      </div>
+    </dialog>
+
+    <script src="rules.js"></script>
+    <script src="decks.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
