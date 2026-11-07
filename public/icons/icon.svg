@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Stadt Land Fluss Extrem: handgezeichnete Kachel mit einem großen Buchstaben und Haken -->
+  <rect width="512" height="512" fill="#fff"/>
+  <path d="M110 92 C 104 70, 124 56, 148 58 L 364 54 C 392 52, 412 70, 408 98 L 414 400 C 416 428, 396 448, 370 446 L 150 452 C 122 454, 102 436, 104 408 Z"
+        fill="#fff" stroke="#000" stroke-width="18" stroke-linejoin="round" stroke-linecap="round"/>
+  <text x="252" y="318" text-anchor="middle" font-family="Chalkboard SE, Comic Sans MS, Segoe Print, sans-serif" font-size="250" font-weight="700" fill="#000">S</text>
+  <path d="M138 382 C 170 360, 200 398, 232 376 C 262 356, 290 396, 320 378 C 348 360, 372 392, 382 384"
+        fill="none" stroke="#000" stroke-width="12" stroke-linecap="round"/>
+  <path d="M318 96 L 352 134 L 418 56" fill="none" stroke="#000" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

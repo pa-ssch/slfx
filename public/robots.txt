@@ -1,0 +1,4 @@
+# Stadt Land Fluss Extrem – https://slfx.9xb.de
+# Alle Crawler willkommen. Es gibt nur eine Seite und das Impressum.
+User-agent: *
+Allow: /
