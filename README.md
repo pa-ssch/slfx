@@ -55,9 +55,11 @@ Markierungen) oder zum Rundenstart desselben Teams. Punkte gehen nie verloren.
 Die Walzen laufen von selbst an, sobald die Ansicht erscheint. Beim Tipp auf
 „Stopp“ (oder nach 4 Sekunden von selbst) werden Buchstabe und Modus in diesem
 Moment mit je einem Zufallswert gezogen, unabhängig davon, wo die Walzen gerade
-stehen. Danach laufen beide gleich lang aus, jede eine zufällige Zahl ganzer
-Umdrehungen, und halten gemeinsam auf dem Ergebnis. Der Zeitpunkt des Tippens
-kann das Ergebnis also nicht beeinflussen. Häufige Anfangsbuchstaben kommen öfter,
+stehen. Danach laufen beide gleich lang aus: Der Auslauf beginnt genau mit dem
+Tempo des Drehens und wird nur langsamer, nie schneller; die Strecke bis zum
+Ergebnis wird um ganze Umdrehungen verlängert, bis sie zur zufälligen Dauer
+passt. Beide Walzen halten gemeinsam auf dem Ergebnis. Der Zeitpunkt des
+Tippens kann das Ergebnis also nicht beeinflussen. Häufige Anfangsbuchstaben kommen öfter,
 Q, X und Y stehen nicht auf der Walze, und der Buchstabe der Vorrunde ist
 ausgeschlossen. Bei `prefers-reduced-motion` gibt es keine Animation, das
 Ergebnis steht sofort.
@@ -76,9 +78,8 @@ Tests aus derselben Datei gelesen:
 | `COUNTDOWN_SECONDS`, `URGENT_SECONDS` | 3, 5 |
 | `LETTER_WEIGHTS` | A 6, B 8, C 2, D 5, E 5, F 6, G 6, H 7, I 2, J 2, K 8, L 5, M 7, N 3, O 2, P 5, Q 0, R 5, S 10, T 5, U 2, V 3, W 6, X 0, Y 0, Z 3 (0 = nicht auf der Walze) |
 | `WHEEL.AUTO_STOP_MS` | 4000 |
-| `WHEEL.MIN_TURNS`, `MAX_TURNS` | 2 bis 4 ganze Umdrehungen Auslauf |
-| `WHEEL.MIN_RUNOUT_MS`, `MAX_RUNOUT_MS` | 1800 bis 3000 ms Auslauf, für beide Walzen gleich |
-| `WHEEL.SPEED` | 14 Zellen je Sekunde |
+| `WHEEL.MIN_RUNOUT_MS`, `MAX_RUNOUT_MS` | 2500 bis 3500 ms Auslauf, für beide Walzen gleich (mindestens 1,5 × Zellen ÷ `SPEED`, damit die Strecke zum Tempo passt) |
+| `WHEEL.SPEED` | 14 Zellen je Sekunde beim Drehen, zugleich das Starttempo des Auslaufs |
 | `MODES` | Name, Sekunden, Punkte bzw. Bonus, Gewicht, Mindestteams, Erklärungstext je Modus (siehe oben) |
 
 ## Aufbau

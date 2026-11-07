@@ -139,6 +139,65 @@ test.describe("Walze mit Animation", () => {
     }
   });
 
+  test("Auslauf beginnt mit dem Tempo des Drehens und wird nur langsamer, nie schneller", async ({ page }) => {
+    await fixRandom(page, 0.5);
+    await openTurn(page);
+    await page.clock.install();
+    await page.click("#readyBtn");
+    // Jede Transform-Änderung mit ihrem Zeitstempel mitschreiben: ein Eintrag je Frame
+    await page.evaluate(() => {
+      window.__rec = { letterReel: [], modeReel: [] };
+      for (const id of Object.keys(window.__rec)) {
+        const track = document.getElementById(id);
+        const h = track.firstChild.getBoundingClientRect().height;
+        new MutationObserver(() => {
+          window.__rec[id].push([performance.now(), -parseFloat(track.style.transform.match(/-?[\d.]+/)[0]) / h]);
+        }).observe(track, { attributes: true, attributeFilter: ["style"] });
+      }
+    });
+    await page.clock.runFor(1000);
+    await page.click("#spinBtn");
+    const stopAt = await page.evaluate(() => performance.now());
+    await page.clock.runFor(W.MAX_RUNOUT_MS + 500);
+    await expect(page.locator("#goBtn")).toBeVisible();
+    const rec = await page.evaluate(() => window.__rec);
+    const n = { letterReel: WHEEL_LETTERS.length, modeReel: wheelModes(2).length };
+    for (const id of Object.keys(rec)) {
+      // Geschwindigkeit in Zellen je Sekunde zwischen aufeinanderfolgenden Frames,
+      // das unsichtbare Zurücksetzen um n Zellen herausgerechnet
+      const v = [];
+      for (let k = 1; k < rec[id].length; k++) {
+        const [t0, p0] = rec[id][k - 1];
+        const [t1, p1] = rec[id][k];
+        if (t1 <= t0) continue;
+        const d = (((p1 - p0) % n[id]) + n[id]) % n[id];
+        v.push({ t: t1, v: (d * 1000) / (t1 - t0) });
+      }
+      const before = v.filter((x) => x.t <= stopAt);
+      const after = v.filter((x) => x.t > stopAt);
+      expect(before.length, `${id}: Frames vor Stopp`).toBeGreaterThan(20);
+      expect(after.length, `${id}: Frames im Auslauf`).toBeGreaterThan(100);
+      // Freies Drehen mit dem Tempo aus den Regeln (Toleranz: der Browser rundet die Verschiebung)
+      for (const x of before) {
+        expect(x.v, `${id}: freies Drehen`).toBeGreaterThan(W.SPEED * 0.9);
+        expect(x.v, `${id}: freies Drehen`).toBeLessThan(W.SPEED * 1.1);
+      }
+      // Auslauf: nie schneller als das freie Drehen und nie schneller als zuvor. Über drei
+      // Frames geglättet, weil die Zeitstempel am Übergang um einen Frame zittern können.
+      const smooth = after.map((_, k) => {
+        const win = after.slice(Math.max(0, k - 1), k + 2);
+        return win.reduce((a, x) => a + x.v, 0) / win.length;
+      });
+      expect(smooth[0], `${id}: Starttempo`).toBeLessThanOrEqual(W.SPEED * 1.05);
+      for (let k = 1; k < smooth.length; k++) {
+        const window = smooth.slice(Math.max(0, k - 3), k + 2).map((v) => v.toFixed(2)).join(" ");
+        expect(smooth[k], `${id}, Frame ${k}: ${window}`).toBeLessThanOrEqual(smooth[k - 1] + 0.3); // 2 % Toleranz, eine echte Beschleunigung ist ein Vielfaches
+      }
+      expect(smooth[smooth.length - 1], `${id}: Ende`).toBeLessThan(1);
+      expect(smooth[Math.floor(smooth.length / 2)], `${id}: Mitte`).toBeGreaterThan(1);
+    }
+  });
+
   test("ohne Tipp stoppt die Walze nach der Höchstdauer von selbst", async ({ page }) => {
     await fixRandom(page, 0.2);
     await openTurn(page);

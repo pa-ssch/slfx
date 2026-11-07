@@ -36,11 +36,9 @@ var RULES = {
   // Walzen (Millisekunden bzw. Umdrehungen)
   WHEEL: {
     AUTO_STOP_MS: 4000, // ohne Tipp auf "Stopp" hält die Walze von selbst
-    MIN_TURNS: 2, // Auslauf: so viele ganze Umdrehungen mindestens ...
-    MAX_TURNS: 4, // ... und höchstens, zufällig
-    MIN_RUNOUT_MS: 1800, // Dauer des Auslaufs mindestens ...
-    MAX_RUNOUT_MS: 3000, // ... und höchstens, zufällig; beide Walzen laufen gleich lang aus
-    SPEED: 14, // Zellen je Sekunde beim freien Drehen
+    MIN_RUNOUT_MS: 2500, // Dauer des Auslaufs mindestens ...
+    MAX_RUNOUT_MS: 3500, // ... und höchstens, zufällig; beide Walzen laufen gleich lang aus
+    SPEED: 14, // Zellen je Sekunde beim freien Drehen; der Auslauf beginnt mit diesem Tempo
   },
 
   // Modi: Reihenfolge = Reihenfolge auf der Walze. Gewicht 0 nimmt einen Modus heraus.

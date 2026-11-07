@@ -191,7 +191,7 @@ test.describe("Datenqualität", () => {
     expect(RULES.MODES.everyone.seconds).toBe(0);
     for (const w of Object.values(RULES.LETTER_WEIGHTS)) expect(w).toBeGreaterThanOrEqual(0);
     expect(Object.keys(RULES.LETTER_WEIGHTS).join("")).toBe("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
-    expect(RULES.WHEEL.MIN_TURNS).toBeLessThanOrEqual(RULES.WHEEL.MAX_TURNS);
+    expect(RULES.WHEEL.SPEED).toBeGreaterThan(0);
     expect(RULES.WHEEL.MIN_RUNOUT_MS).toBeLessThanOrEqual(RULES.WHEEL.MAX_RUNOUT_MS);
   });
 });

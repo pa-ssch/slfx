@@ -368,34 +368,66 @@
     function frame(t) {
       if (last !== null) self.pos += (RULES.WHEEL.SPEED * (t - last)) / 1000;
       last = t;
+      self.lastFrame = t; // Zeitbasis für den Auslauf, damit kein Frame stillsteht
       self.apply();
       self.raf = requestAnimationFrame(frame);
     }
     this.raf = requestAnimationFrame(frame);
   };
-  // Auslaufen bis zum Ziel: zufällig viele ganze Umdrehungen in der vorgegebenen Dauer
-  Reel.prototype.stop = function (index, duration, onDone) {
+  // Auslaufen bis zum Ziel in der vorgegebenen Dauer T (Sekunden): beginnt genau mit dem
+  // Tempo des freien Drehens und wird nur langsamer, nie schneller. Die Strecke D ist
+  // der Weg bis zum Ziel plus so viele ganze Umdrehungen, dass sie zum Tempo passt.
+  //   D >= S*T/2: erst konstant weiter, dann linear abbremsen (v von S auf 0)
+  //   D <  S*T/2: Polynom mit v(0) = S, v(T) = 0, s(T) = D (fällt monoton, solange D >= S*T/3)
+  function runoutPath(S, T, D) {
+    if (D >= (S * T) / 2) {
+      var tc = (2 * D) / S - T; // Dauer der konstanten Phase
+      var td = T - tc; // Dauer des Bremsens
+      if (td <= 0.001) {
+        // Randfall D == S*T: die ganze Zeit konstant, das Ziel liegt genau am Ende
+        return function (t) {
+          return S * t;
+        };
+      }
+      return function (t) {
+        if (t < tc) return S * t;
+        var u = t - tc;
+        return S * tc + S * u - (S * u * u) / (2 * td);
+      };
+    }
+    var a = (3 * D - 2 * S * T) / (T * T);
+    var b = (S * T - 2 * D) / (T * T * T);
+    return function (t) {
+      return S * t + a * t * t + b * t * t * t;
+    };
+  }
+  // Auslaufstrecke: Weg bis zum Ziel, plus ganze Umdrehungen, bis sie mindestens S*T/3 lang ist
+  Reel.prototype.runoutDistance = function (index, S, T) {
+    var ahead = (index - (this.pos - this.n) + this.n) % this.n;
+    var dist = ahead;
+    while (dist < (S * T) / 3) dist += this.n;
+    return dist;
+  };
+  Reel.prototype.stop = function (index, durationMs, onDone) {
     var self = this;
-    var W = RULES.WHEEL;
     this.cancel();
     if (this.state !== "spinning" || prefersReducedMotion()) {
       this.set(index);
       onDone();
       return;
     }
+    var S = RULES.WHEEL.SPEED;
+    var T = durationMs / 1000;
     var start = this.pos;
-    var ahead = (index - (start - this.n) + this.n) % this.n; // Weg bis zum Ziel, 0 bis n
-    var turns = W.MIN_TURNS + Math.floor(Math.random() * (W.MAX_TURNS - W.MIN_TURNS + 1));
-    var dist = ahead + turns * this.n;
-    var t0 = null;
+    var path = runoutPath(S, T, this.runoutDistance(index, S, T));
+    var t0 = typeof this.lastFrame === "number" ? this.lastFrame : null;
     this.state = "runout";
     function frame(t) {
-      if (t0 === null) t0 = t;
-      var k = Math.min(1, (t - t0) / duration);
-      var eased = 1 - Math.pow(1 - k, 3);
-      self.pos = start + dist * eased;
+      if (t0 === null || t < t0) t0 = t;
+      var k = Math.min(T, (t - t0) / 1000);
+      self.pos = start + path(k);
       self.apply();
-      if (k < 1) {
+      if (k < T) {
         self.raf = requestAnimationFrame(frame);
       } else {
         self.raf = null;
@@ -482,6 +514,10 @@
     var key = pickMode(game.teams.length);
     var W = RULES.WHEEL;
     var duration = W.MIN_RUNOUT_MS + Math.random() * (W.MAX_RUNOUT_MS - W.MIN_RUNOUT_MS);
+    // Die Dauer muss lang genug sein, dass auch die längere Walze (bis zu einer ganzen
+    // Umdrehung Weg) im Tempo-Fenster [S*T/3, S*T] landet: T >= 1,5 * n / S
+    var maxN = Math.max(letterReel.n, modeReel.n);
+    duration = Math.max(duration, (1500 * maxN) / W.SPEED);
     var pending = 2;
     function done() {
       if (--pending === 0) finishWheel(letter, key);
