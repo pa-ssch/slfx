@@ -594,8 +594,9 @@ body.in-game .scorebar {
   --cell: clamp(56px, 14vmin, 92px);
   position: relative;
   display: flex;
+  flex-shrink: 0; /* nie zusammendrücken, sonst stimmt das Raster der Zellen nicht mehr */
   width: min(100%, 26rem);
-  height: calc(var(--cell) * 3);
+  height: calc(var(--cell) * 3 + 6px); /* drei Zellen plus Rahmen oben und unten */
   overflow: hidden;
   border: 3px solid #000;
   border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
@@ -879,7 +880,7 @@ body.in-game .scorebar {
     gap: 6px;
   }
   .reel-box {
-    --cell: clamp(40px, 13vmin, 60px);
+    --cell: clamp(40px, 12vmin, 56px);
     width: min(70vw, 26rem);
   }
   .mode-col .cell {

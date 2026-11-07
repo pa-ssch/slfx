@@ -179,6 +179,17 @@ async function checkTiles(page) {
   });
 }
 
+// Steht die Walze exakt auf dem Ergebnis? Abstand der Ergebniszelle (mittlere Kopie)
+// von der Mitte des Kastens in Pixeln; 0 ist perfekt
+async function reelOffset(page, trackId, label) {
+  return page.evaluate(([id, label]) => {
+    const box = document.querySelector(".reel-box").getBoundingClientRect();
+    const cells = [...document.getElementById(id).querySelectorAll(".cell")].filter((c) => c.textContent === label);
+    const cell = cells[1].getBoundingClientRect(); // mittlere Kopie
+    return Math.abs(cell.top + cell.height / 2 - (box.top + box.height / 2));
+  }, [trackId, label]);
+}
+
 // Alle Dateien unter dir, rekursiv, relativ mit "/" als Trenner; Punkt-Dateien (.DS_Store) ausgenommen
 function listFiles(dir, prefix = "") {
   return fs
@@ -193,5 +204,5 @@ module.exports = {
   PUBLIC, RULES, DECKS, DEFAULT_ON, KEYS, N, LETTERS, WHEEL_LETTERS,
   wheelModes, modeLabel, categoriesOf, expectedLetter, expectedMode,
   watchErrors, fixRandom, setRandom, readGame, readUsed, makeRound, makeGame, seedGame, createGame,
-  spinInstant, startRound, fits, checkTiles, listFiles,
+  spinInstant, startRound, fits, checkTiles, listFiles, reelOffset,
 };

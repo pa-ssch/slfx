@@ -347,8 +347,10 @@
     this.pos = this.n;
     this.apply();
   }
+  // Exakte Zellhöhe mit Nachkommastellen: offsetHeight rundet auf ganze Pixel,
+  // und der Fehler summiert sich über die Zellen zu einem sichtbaren Versatz
   Reel.prototype.cellHeight = function () {
-    return this.track.firstChild ? this.track.firstChild.offsetHeight : 0;
+    return this.track.firstChild ? this.track.firstChild.getBoundingClientRect().height : 0;
   };
   Reel.prototype.apply = function () {
     while (this.pos >= 2 * this.n) this.pos -= this.n;

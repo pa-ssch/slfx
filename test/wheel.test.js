@@ -3,7 +3,7 @@
 const { test, expect } = require("@playwright/test");
 const {
   RULES, WHEEL_LETTERS, LETTERS, DECKS, categoriesOf, wheelModes, modeLabel, expectedLetter, expectedMode,
-  watchErrors, fixRandom, setRandom, readGame, makeGame, seedGame, spinInstant,
+  watchErrors, fixRandom, setRandom, readGame, makeGame, seedGame, spinInstant, reelOffset,
 } = require("./helpers");
 
 const W = RULES.WHEEL;
@@ -88,9 +88,55 @@ test.describe("Walze mit Animation", () => {
     await expect(page.locator("#goBtn")).toBeVisible();
     const game = await readGame(page);
     expect([await middleOf(page, "letterReel"), await middleOf(page, "modeReel")]).toEqual([game.round.letter, modeLabel(game.round.mode)]);
+    // Ergebnis exakt in der Mitte, auch bei Zellhöhen mit Nachkommastellen
+    expect(await reelOffset(page, "letterReel", game.round.letter)).toBeLessThan(1);
+    expect(await reelOffset(page, "modeReel", modeLabel(game.round.mode))).toBeLessThan(1);
     await expect(page.locator("#wheelResult")).toContainText(game.round.letter + " – " + RULES.MODES[game.round.mode].name);
     await expect(page.locator("#wheelResult")).toContainText(RULES.MODES[game.round.mode].text);
     await expect(page.locator("#spinBtn")).toBeHidden();
+  });
+
+  test("Ergebnis steht in jeder Position exakt in der Mitte (hinten im Alphabet, Querformat, nach Drehung)", async ({ page }) => {
+    // Zufallswert, der auf Z fällt: letzte Walzenposition, größter möglicher Rundungsfehler
+    const total = WHEEL_LETTERS.reduce((s, l) => s + RULES.LETTER_WEIGHTS[l], 0);
+    await fixRandom(page, (total - 0.5) / total);
+    expect(expectedLetter((total - 0.5) / total)).toBe("Z");
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await openWheel(page);
+    const game = await readGame(page);
+    expect(game.round.letter).toBe("Z");
+    expect(await reelOffset(page, "letterReel", "Z")).toBeLessThan(1);
+    expect(await reelOffset(page, "modeReel", modeLabel(game.round.mode))).toBeLessThan(1);
+    await page.setViewportSize({ width: 844, height: 390 });
+    await page.waitForTimeout(300);
+    expect(await reelOffset(page, "letterReel", "Z")).toBeLessThan(1);
+    expect(await reelOffset(page, "modeReel", modeLabel(game.round.mode))).toBeLessThan(1);
+    // Nach Neuladen in Phase "ready" ebenso
+    await page.reload();
+    await page.click("#resumeBtn");
+    await expect(page.locator("#goBtn")).toBeVisible();
+    expect(await reelOffset(page, "letterReel", "Z")).toBeLessThan(1);
+  });
+
+  test("während der Drehung liegen die Zellen immer auf dem Raster der Markierung", async ({ page }) => {
+    await openTurn(page);
+    await page.clock.install();
+    await page.click("#readyBtn");
+    for (let i = 0; i < 5; i++) {
+      await page.clock.runFor(137);
+      const drift = await page.evaluate(() => {
+        const box = document.querySelector(".reel-box").getBoundingClientRect();
+        return ["letterReel", "modeReel"].map((id) => {
+          const cells = [...document.getElementById(id).querySelectorAll(".cell")];
+          // Die Zelle, die die Mitte überdeckt: ihr Versatz zur Mitte muss kleiner als eine halbe Zelle sein,
+          // und die Zellhöhe muss zur Markierung (ein Drittel des Kastens) passen
+          const mid = box.top + box.height / 2;
+          const cell = cells.find((c) => { const r = c.getBoundingClientRect(); return r.top <= mid && r.bottom > mid; }).getBoundingClientRect();
+          return Math.abs(cell.height - (box.height - 6) / 3); // Kasten = drei Zellen plus Rahmen
+        });
+      });
+      for (const d of drift) expect(d).toBeLessThan(1);
+    }
   });
 
   test("ohne Tipp stoppt die Walze nach der Höchstdauer von selbst", async ({ page }) => {
