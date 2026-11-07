@@ -81,10 +81,10 @@ var RULES = {
     allornothing: {
       name: "Alles oder nichts",
       seconds: 80,
-      bonus: 10,
+      bonus: 8, // alle acht geschafft: so viele Punkte, sonst 0 (am Ende wählbar)
       weight: 2,
       minTeams: 1,
-      text: "Alle acht in der Zeit: 10 Punkte. Sonst nichts.",
+      text: "Alle acht in der Zeit: 8 Punkte. Sonst nichts.",
     },
     everyone: {
       name: "Alle raten mit",

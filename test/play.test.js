@@ -112,7 +112,8 @@ test.describe("Vor Ablauf der Zeit fertig", () => {
     await playRound(page, ready({ round: { mode: "allornothing" } }));
     await tile(page, 0).click();
     await page.click("#doneBtn");
-    await expect(page.locator("#scorePoints")).toHaveText("0 Punkte");
+    await expect(page.locator("#scorePoints")).toHaveText("+0 Punkte");
+    await expect(page.locator("#scoreValue")).toHaveText(`0 von ${N}`);
   });
 
   test("Neuladen in der Runde: „Fertig“ bleibt verfügbar", async ({ page }) => {
@@ -177,7 +178,8 @@ test.describe("Modi mit Timer und Punkten je Begriff", () => {
 });
 
 test.describe("Modus Alles oder nichts", () => {
-  test("alle acht vor Ablauf: Timer stoppt sofort, Bonus", async ({ page }) => {
+  test("alle acht vor Ablauf: Timer stoppt sofort, 8 Punkte vorausgewählt", async ({ page }) => {
+    expect(M.allornothing.bonus).toBe(N);
     await playRound(page, ready({ round: { mode: "allornothing" } }));
     for (let i = 0; i < N - 1; i++) await tile(page, i).click();
     await page.clock.runFor(10000);
@@ -185,26 +187,47 @@ test.describe("Modus Alles oder nichts", () => {
     await tile(page, N - 1).click();
     await expect(page.locator("#timer")).toHaveText("Geschafft!");
     await expect(page.locator("#doneBtn")).toBeVisible();
-    const before = (await readGame(page)).phase;
-    expect(before).toBe("score");
-    await page.clock.runFor(60000); // Timer darf nichts mehr tun
+    expect((await readGame(page)).phase).toBe("score");
+    await page.clock.runFor(90000); // Timer darf nichts mehr tun
     await expect(page.locator("#timer")).toHaveText("Geschafft!");
     await page.click("#doneBtn");
-    await expect(page.locator("#scoreStepper")).toBeHidden();
+    await expect(page.locator("#scoreStepper")).toBeVisible();
+    await expect(page.locator("#scoreValue")).toHaveText(`${N} von ${N}`);
     await expect(page.locator("#scorePoints")).toHaveText(`+${M.allornothing.bonus} Punkte`);
-    await expect(page.locator("#scoreBtn")).toHaveText("Bestätigen");
+    await expect(page.locator("#scorePlus")).toBeDisabled();
+    await expect(page.locator("#scoreBtn")).toHaveText("Punkte eintragen");
     await page.click("#scoreBtn");
     expect(await points(page)).toEqual([String(M.allornothing.bonus), "0"]);
   });
 
-  test("nicht alle acht: null Punkte", async ({ page }) => {
+  test("nicht alle acht: 0 vorausgewählt, am Ende aber 0 oder 8 wählbar", async ({ page }) => {
     await playRound(page, ready({ round: { mode: "allornothing" } }));
     for (let i = 0; i < N - 1; i++) await tile(page, i).click();
     await page.clock.runFor(M.allornothing.seconds * 1000 + 250);
     await expect(page.locator("#timer")).toHaveText("Zeit!");
     await page.click("#doneBtn");
-    await expect(page.locator("#scorePoints")).toHaveText("0 Punkte");
     await expect(page.locator("#scoreInfo")).toContainText(`${N - 1} von ${N}`);
+    await expect(page.locator("#scoreValue")).toHaveText(`0 von ${N}`);
+    await expect(page.locator("#scorePoints")).toHaveText("+0 Punkte");
+    await expect(page.locator("#scoreMinus")).toBeDisabled();
+    await page.click("#scorePlus"); // springt direkt auf alle
+    await expect(page.locator("#scoreValue")).toHaveText(`${N} von ${N}`);
+    await expect(page.locator("#scorePoints")).toHaveText(`+${M.allornothing.bonus} Punkte`);
+    await page.click("#scoreMinus");
+    await expect(page.locator("#scoreValue")).toHaveText(`0 von ${N}`);
+    await page.click("#scorePlus");
+    await page.click("#scoreBtn");
+    expect(await points(page)).toEqual([String(M.allornothing.bonus), "0"]);
+  });
+
+  test("Wahl überlebt Neuladen, Bestätigen mit 0 gibt nichts", async ({ page }) => {
+    await seedGame(page, makeGame({ phase: "score", round: makeRound({ categories: CATS, mode: "allornothing", terms: N }) }));
+    await page.click("#resumeBtn");
+    await expect(page.locator("#scoreValue")).toHaveText(`${N} von ${N}`);
+    await page.click("#scoreMinus");
+    await page.reload();
+    await page.click("#resumeBtn");
+    await expect(page.locator("#scoreValue")).toHaveText(`0 von ${N}`);
     await page.click("#scoreBtn");
     expect(await points(page)).toEqual(["0", "0"]);
   });

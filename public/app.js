@@ -799,7 +799,7 @@
   function roundPoints() {
     var m = mode();
     var r = game.round;
-    if (r.mode === "allornothing") return allDone() ? m.bonus : 0;
+    if (r.mode === "allornothing") return (r.terms === null ? allDone() : r.terms === r.categories.length) ? m.bonus : 0;
     if (r.mode === "everyone") return 0; // schon je Begriff vergeben
     var terms = r.terms === null ? countDone() : r.terms;
     return terms * m.points;
@@ -837,12 +837,17 @@
       });
       btn.textContent = "Weiter";
     } else if (r.mode === "allornothing") {
+      // Alles oder nichts: vorbelegt nach den Kacheln, am Ende aber wählbar (0 oder alle)
+      if (r.terms === null) r.terms = allDone() ? n : 0;
+      else r.terms = r.terms === n ? n : 0;
       var all = allDone();
-      info.textContent = all
-        ? m.name + ": Alle " + n + " geschafft!"
-        : m.name + ": Nur " + countDone() + " von " + n + " geschafft.";
-      points.textContent = all ? "+" + pointsText(m.bonus) : pointsText(0);
-      btn.textContent = "Bestätigen";
+      info.textContent =
+        m.name + ": " + (all ? "Alle " + n + " geschafft!" : "Nur " + countDone() + " von " + n + " geschafft.") + " Stimmt das?";
+      stepper.hidden = false;
+      $("scoreValue").textContent = r.terms + " von " + n;
+      $("scoreMinus").disabled = r.terms === 0;
+      $("scorePlus").disabled = r.terms === n;
+      points.textContent = "+" + pointsText(roundPoints());
     } else {
       if (r.terms === null) r.terms = countDone();
       info.textContent = m.name + ": " + m.points + " Punkt" + (m.points === 1 ? "" : "e") + " je Begriff. Stimmt die Zahl?";
@@ -857,7 +862,9 @@
 
   function adjustTerms(delta) {
     var r = game.round;
-    r.terms = Math.max(0, Math.min(r.categories.length, (r.terms === null ? countDone() : r.terms) + delta));
+    var n = r.categories.length;
+    if (r.mode === "allornothing") r.terms = delta > 0 ? n : 0; // nur 0 oder alle
+    else r.terms = Math.max(0, Math.min(n, (r.terms === null ? countDone() : r.terms) + delta));
     saveGame();
     showScore();
   }

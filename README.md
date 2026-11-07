@@ -46,7 +46,7 @@ Markierungen) oder zum Rundenstart desselben Teams. Punkte gehen nie verloren.
 | Gemütlich | 60 s | 1 je geschafftem Begriff | 2 |
 | Schnell | 20 s | 1 je geschafftem Begriff | 2 |
 | Blitz | 15 s | 1 je geschafftem Begriff | 1 |
-| Alles oder nichts | 80 s | alle acht in der Zeit: 10 Punkte, der Timer stoppt sofort; sonst 0 | 2 |
+| Alles oder nichts | 80 s | alle acht in der Zeit: 8 Punkte, der Timer stoppt sofort; sonst 0. Am Ende wählbar: 0 oder 8 | 2 |
 | Alle raten mit | kein Timer | Begriffe nacheinander einzeln groß, das schnellste Team ruft und bekommt per Tipp auf seinen Namen 1 Punkt, „Überspringen“ bei Einigkeit | 2, erst ab 2 Teams |
 
 ### Walze

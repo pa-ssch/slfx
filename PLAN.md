@@ -94,7 +94,7 @@ Spiellogik dieses Spiels.
 | Kategorien je Runde | 8 |
 | Normal | 40 s, 1 Punkt je Begriff, Gewicht 5 (Rückmeldung vom 7.11.2026, vorher 60 s) |
 | Gemütlich / Schnell / Blitz | 60 s / 20 s / 15 s, 1 Punkt je Begriff, Gewicht 2 / 2 / 1 („Doppelt“ entfällt) |
-| Alles oder nichts | 80 s, alle acht = 10 Punkte, sonst 0, Gewicht 2 |
+| Alles oder nichts | 80 s, alle acht = 8 Punkte, sonst 0, am Ende 0 oder 8 wählbar, Gewicht 2 (Rückmeldung vom 7.11.2026, vorher 10 Punkte ohne Wahl) |
 | Alle raten mit | kein Timer, 1 Punkt je Begriff an das schnellste Team, Gewicht 2, ab 2 Teams |
 | Buchstaben | A 6, B 8, C 2, D 5, E 5, F 6, G 6, H 7, I 2, J 2, K 8, L 5, M 7, N 3, O 2, P 5, Q 0, R 5, S 10, T 5, U 2, V 3, W 6, X 0, Y 0, Z 3 |
 | Walze | läuft von selbst an, Auto-Stopp nach 4 s, Auslauf beider Walzen 2 bis 4 Umdrehungen in 1,8 bis 3 s |
@@ -154,8 +154,9 @@ Spiellogik dieses Spiels.
   lesen kann.
 - Q, X und Y haben Gewicht 0 (Konstante in `rules.js`), sie stehen nicht auf der Walze.
 - „Nochmal mit denselben Teams“ beginnt wieder mit Team 1.
-- Nach „Alles oder nichts“ und „Alle raten mit“ gibt es keinen Stepper, nur Bestätigen bzw.
-  eine Zusammenfassung der schon vergebenen Punkte.
+- Nach „Alles oder nichts“ springt der Stepper nur zwischen 0 und 8 (Rückmeldung vom
+  7.11.2026); nach „Alle raten mit“ gibt es keinen Stepper, nur die Zusammenfassung der
+  schon vergebenen Punkte.
 - Der Stepper in der Punkteansicht zählt Begriffe (0 bis 8), die Punkte ergeben sich aus
   dem Modus.
 - Die Zeitvarianten (Gemütlich, Schnell, Blitz) geben wie Normal einen Punkt je Begriff;
