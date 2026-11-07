@@ -11,10 +11,10 @@ async function playThrough(page) {
   await page.click('[data-go="rules"]');
   await page.click('#rules [data-go="home"]');
   await page.click("#newBtn");
+  await page.click("#startBtn");
   const second = page.locator("#decks input").nth(1);
   await second.check();
   await second.uncheck();
-  await page.click("#startBtn");
   await spinInstant(page);
   await page.clock.install();
   await startRound(page);

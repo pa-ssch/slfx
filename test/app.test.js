@@ -90,20 +90,12 @@ test.describe("Spiel anlegen", () => {
     await page.click("#newBtn");
   });
 
-  test("Vorgaben: 2 Teams, Zielpunkte aus den Regeln, Decks aus decks.js mit nur DEFAULT_ON", async ({ page }) => {
+  test("Vorgaben: 2 Teams, Zielpunkte aus den Regeln, keine Deck-Auswahl", async ({ page }) => {
     await expect(page.locator("#teamCount")).toHaveText("2");
     await expect(page.locator("#teams input")).toHaveCount(2);
     await expect(page.locator("#team-0")).toHaveAttribute("placeholder", "Team 1");
     await expect(page.locator("#target")).toHaveValue(String(RULES.DEFAULT_TARGET));
-    const labels = page.locator("#decks label");
-    await expect(labels).toHaveCount(ALL.length);
-    expect(await labels.allTextContents()).toEqual(ALL.map((n) => " " + n));
-    expect(DEFAULT_ON).toEqual(["Normal"]);
-    for (const n of ALL) {
-      const box = page.locator(`#decks input[value="${n}"]`);
-      if (DEFAULT_ON.includes(n)) await expect(box).toBeChecked();
-      else await expect(box).not.toBeChecked();
-    }
+    await expect(page.locator("#setup #decks")).toHaveCount(0); // Decks werden je Runde gewählt
   });
 
   test("Teamanzahl zwischen MIN und MAX, Namen bleiben beim Umschalten erhalten", async ({ page }) => {
@@ -152,6 +144,65 @@ test.describe("Spiel anlegen", () => {
     await expect(page.locator("#scores .chip")).toHaveCount(1);
   });
 
+  test("„Los geht's“ speichert das Spiel mit Teams und Ziel", async ({ page }) => {
+    await page.click("#teamPlus");
+    await page.fill("#team-2", "Die Dritten");
+    await page.fill("#target", "150");
+    await page.click("#startBtn");
+    const game = await readGame(page);
+    expect(game).toMatchObject({
+      v: 1,
+      teams: [{ name: "Team 1", score: 0 }, { name: "Team 2", score: 0 }, { name: "Die Dritten", score: 0 }],
+      target: 150,
+      decks: DEFAULT_ON,
+      roundNo: 0,
+      current: 0,
+      phase: "turn",
+      round: null,
+    });
+    await expect(page.locator("#turnInfo")).toContainText("Ziel: 150 Punkte");
+  });
+
+  test("Touch-Ziele: Stepper, Namensfelder und Start-Button mindestens 44 px", async ({ page }) => {
+    const sizes = await page.$$eval("#setup .step, #startBtn, #teams input", (els) =>
+      els.map((e) => e.getBoundingClientRect().height),
+    );
+    for (const h of sizes) expect(h).toBeGreaterThanOrEqual(44);
+  });
+
+  test("nach einem beendeten Spiel sind Teams und Ziel vorbelegt", async ({ page }) => {
+    await seedGame(page, makeGame({ names: ["Füchse", "Hasen", "Igel"], target: 30, phase: "end" }));
+    await page.click("#newBtn");
+    await expect(page.locator("#teams input")).toHaveCount(3);
+    await expect(page.locator("#team-0")).toHaveValue("Füchse");
+    await expect(page.locator("#target")).toHaveValue("30");
+  });
+
+  test("Eck-Button führt zurück zur Startseite", async ({ page }) => {
+    await page.click('#setup [data-go="home"]');
+    await expect(page.locator("#home.active")).toBeVisible();
+  });
+});
+
+test.describe("Rundenstart: Decks je Runde", () => {
+  test.beforeEach(async ({ page }) => {
+    await createGame(page);
+  });
+
+  test("Decks aus decks.js, Reihenfolge erhalten, nur DEFAULT_ON vorausgewählt", async ({ page }) => {
+    const labels = page.locator("#turn #decks label");
+    await expect(labels).toHaveCount(ALL.length);
+    expect(await labels.allTextContents()).toEqual(ALL.map((n) => " " + n));
+    expect(DEFAULT_ON).toEqual(["Normal"]);
+    for (const n of ALL) {
+      const box = page.locator(`#decks input[value="${n}"]`);
+      if (DEFAULT_ON.includes(n)) await expect(box).toBeChecked();
+      else await expect(box).not.toBeChecked();
+    }
+    const sizes = await page.$$eval("#decks .cat, #readyBtn", (els) => els.map((e) => e.getBoundingClientRect().height));
+    for (const h of sizes) expect(h).toBeGreaterThanOrEqual(44);
+  });
+
   test("Deck-Auswahl wird gespeichert, letztes Deck bleibt aktiv", async ({ page }) => {
     const [keep, other] = ALL;
     await page.check(`#decks input[value="${other}"]`);
@@ -166,7 +217,7 @@ test.describe("Spiel anlegen", () => {
   test("Deck-Auswahl überlebt Neuladen, unbekannte Namen werden ignoriert", async ({ page }) => {
     await page.evaluate(([k, c]) => localStorage.setItem(k, JSON.stringify([c, "GibtEsNicht"])), [KEYS.decks, ALL[1]]);
     await page.reload();
-    await page.click("#newBtn");
+    await page.click("#resumeBtn");
     const checked = await page.$$eval("#decks input", (bs) => bs.filter((b) => b.checked).map((b) => b.value));
     expect(checked).toEqual([ALL[1]]);
   });
@@ -188,53 +239,41 @@ test.describe("Spiel anlegen", () => {
       [KEYS.decks, KEYS.used, small, [...shown, foreign]],
     );
     await page.reload();
-    await page.click("#newBtn");
+    await page.click("#resumeBtn");
     const n = DECKS[small].length;
     await expect(count).toHaveText(`${n} Kategorien, davon ${n - 3} noch nicht gezeigt`);
     await page.evaluate(([k, used]) => localStorage.setItem(k, JSON.stringify(used)), [KEYS.used, DECKS[small]]);
     await page.reload();
-    await page.click("#newBtn");
+    await page.click("#resumeBtn");
     await expect(count).toHaveText(`${n} Kategorien, alle schon gezeigt`);
   });
 
-  test("„Los geht's“ speichert das Spiel mit Teams, Ziel und Decks", async ({ page }) => {
-    await page.click("#teamPlus");
-    await page.fill("#team-2", "Die Dritten");
-    await page.fill("#target", "150");
+  test("„Bereit“ übernimmt die Auswahl für diese Runde, nächste Runde kann anders wählen", async ({ page }) => {
     await page.check('#decks input[value="Weihnachten"]');
-    await page.click("#startBtn");
-    const game = await readGame(page);
-    expect(game).toMatchObject({
-      v: 1,
-      teams: [{ name: "Team 1", score: 0 }, { name: "Team 2", score: 0 }, { name: "Die Dritten", score: 0 }],
-      target: 150,
-      decks: ["Normal", "Weihnachten"],
-      roundNo: 0,
-      current: 0,
-      phase: "turn",
-      round: null,
-    });
-    await expect(page.locator("#turnInfo")).toContainText("Ziel: 150 Punkte");
-  });
-
-  test("Touch-Ziele: Chips, Stepper und Start-Button mindestens 44 px", async ({ page }) => {
-    const sizes = await page.$$eval("#decks .cat, #setup .step, #startBtn, #teams input", (els) =>
-      els.map((e) => e.getBoundingClientRect().height),
-    );
-    for (const h of sizes) expect(h).toBeGreaterThanOrEqual(44);
-  });
-
-  test("nach einem beendeten Spiel sind Teams und Ziel vorbelegt", async ({ page }) => {
-    await seedGame(page, makeGame({ names: ["Füchse", "Hasen", "Igel"], target: 30, phase: "end" }));
-    await page.click("#newBtn");
-    await expect(page.locator("#teams input")).toHaveCount(3);
-    await expect(page.locator("#team-0")).toHaveValue("Füchse");
-    await expect(page.locator("#target")).toHaveValue("30");
-  });
-
-  test("Eck-Button führt zurück zur Startseite", async ({ page }) => {
-    await page.click('#setup [data-go="home"]');
-    await expect(page.locator("#home.active")).toBeVisible();
+    await page.uncheck('#decks input[value="Normal"]');
+    await page.click("#readyBtn");
+    let game = await readGame(page);
+    expect(game.decks).toEqual(["Weihnachten"]);
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.click("#quitBtn");
+    await page.click("#confirmYes");
+    await page.click("#resumeBtn");
+    await expect(page.locator("#wheel.active")).toBeVisible();
+    await expect(page.locator("#goBtn")).toBeVisible();
+    game = await readGame(page);
+    for (const c of game.round.categories) expect(DECKS.Weihnachten).toContain(c);
+    // Zurück zum Rundenstart (Runde verwerfen) und anders wählen
+    await page.evaluate(([k, g]) => localStorage.setItem(k, JSON.stringify({ ...g, phase: "turn", round: null })), [KEYS.game, game]);
+    await page.reload();
+    await page.click("#resumeBtn");
+    await expect(page.locator('#decks input[value="Weihnachten"]')).toBeChecked(); // letzte Auswahl bleibt
+    await page.check('#decks input[value="NSFW"]');
+    await page.uncheck('#decks input[value="Weihnachten"]');
+    await page.click("#readyBtn");
+    await expect(page.locator("#goBtn")).toBeVisible();
+    game = await readGame(page);
+    expect(game.decks).toEqual(["NSFW"]);
+    for (const c of game.round.categories) expect(DECKS.NSFW).toContain(c);
   });
 });
 

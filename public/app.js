@@ -900,8 +900,18 @@
     $("turnTeam").textContent = activeTeam().name + " ist dran";
     var pass = Math.floor(game.roundNo / game.teams.length) + 1;
     $("turnInfo").textContent = "Durchgang " + pass + " · Ziel: " + pointsText(game.target);
+    // Die Decks werden jede Runde neu gewählt, die letzte Auswahl ist vorangehakt
+    buildDeckList();
     show("turn");
     keepAwake();
+  }
+
+  // "Bereit": Deck-Auswahl dieser Runde übernehmen, dann die Walzen
+  function onReady() {
+    var decks = selectedDecksFromUI();
+    game.decks = decks.length > 0 ? decks : loadSelectedDecks();
+    saveGame();
+    showWheel();
   }
 
   function showEnd() {
@@ -1007,7 +1017,6 @@
       : [];
     $("target").value = game ? game.target : RULES.DEFAULT_TARGET;
     renderTeamInputs();
-    buildDeckList();
     show("setup");
   }
 
@@ -1101,9 +1110,7 @@
     var inputs = document.querySelectorAll("#teams input");
     var names = [];
     for (var i = 0; i < inputs.length; i++) names.push(inputs[i].value);
-    var decks = selectedDecksFromUI();
-    if (decks.length === 0) decks = loadSelectedDecks();
-    newGame(names, clampTarget($("target").value), decks);
+    newGame(names, clampTarget($("target").value), loadSelectedDecks());
     showTurn();
   }
 
@@ -1197,7 +1204,7 @@
     e.preventDefault();
     startGame();
   });
-  $("readyBtn").addEventListener("click", showWheel);
+  $("readyBtn").addEventListener("click", onReady);
   $("spinBtn").addEventListener("click", stopSpin);
   $("goBtn").addEventListener("click", startCountdown);
   $("doneBtn").addEventListener("click", onDone);

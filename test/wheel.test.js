@@ -268,8 +268,13 @@ test.describe("Gewichte und Ausschlüsse", () => {
   });
 
   test("Kategorien der Runde kommen aus den gewählten Decks, acht Stück, keine doppelt", async ({ page }) => {
-    await openTurn(page, makeGame({ decks: ["Weihnachten"] }));
+    // Die Auswahl der Runde kommt von den Checkboxen am Rundenstart (letzte Auswahl im Speicher)
+    await seedGame(page, makeGame());
+    await page.evaluate(() => localStorage.setItem("slfx-decks", JSON.stringify(["Weihnachten"])));
+    await page.click("#resumeBtn");
+    await expect(page.locator('#decks input[value="Weihnachten"]')).toBeChecked();
     const game = await spinInstant(page);
+    expect(game.decks).toEqual(["Weihnachten"]);
     expect(game.round.categories).toHaveLength(RULES.CATEGORIES_PER_ROUND);
     expect(new Set(game.round.categories).size).toBe(RULES.CATEGORIES_PER_ROUND);
     for (const c of game.round.categories) expect(categoriesOf(["Weihnachten"])).toContain(c);

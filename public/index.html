@@ -76,9 +76,9 @@
           <ol>
             <li><b>Ein Handy, bis zu fünf Teams.</b> Die Teams spielen reihum, das Handy
               wird weitergegeben.</li>
-            <li>Das Team, das dran ist, tippt auf <b>Bereit</b>. Die beiden Walzen laufen
-              los, ein Tipp auf <b>Stopp</b> liefert den <b>Buchstaben</b> und den
-              <b>Modus</b> mit der Zeit.</li>
+            <li>Das Team, das dran ist, hakt die <b>Decks</b> für seine Runde an und tippt
+              auf <b>Bereit</b>. Die beiden Walzen laufen los, ein Tipp auf <b>Stopp</b>
+              liefert den <b>Buchstaben</b> und den <b>Modus</b> mit der Zeit.</li>
             <li>Nach dem Countdown erscheinen <b>acht Kategorien</b>. Das Team ruft zu jeder
               einen Begriff, der mit dem Buchstaben beginnt, und tippt die geschafften
               Kacheln an. Die anderen Teams passen auf. Wer vor der Zeit durch ist, tippt
@@ -124,22 +124,23 @@
             </div>
           </div>
 
-          <div class="field">
-            <span class="label" id="decksLabel">Decks</span>
-            <div class="categories" id="decks" role="group" aria-labelledby="decksLabel"></div>
-            <p class="small" id="poolcount"></p>
-          </div>
-
           <button type="submit" class="btn big" id="startBtn">Los geht's</button>
         </form>
       </section>
 
       <!-- Rundenstart: Handy weitergeben -->
-      <section id="turn" class="screen game">
-        <p class="hint">Handy weitergeben!</p>
-        <div class="big-team" id="turnTeam"></div>
-        <p class="small" id="turnInfo"></p>
-        <button type="button" class="btn big" id="readyBtn">Bereit</button>
+      <section id="turn" class="screen game scroll">
+        <div class="stack">
+          <p class="hint">Handy weitergeben!</p>
+          <div class="big-team" id="turnTeam"></div>
+          <p class="small" id="turnInfo"></p>
+          <div class="field">
+            <span class="label" id="decksLabel">Decks für diese Runde</span>
+            <div class="categories" id="decks" role="group" aria-labelledby="decksLabel"></div>
+            <p class="small" id="poolcount"></p>
+          </div>
+          <button type="button" class="btn big" id="readyBtn">Bereit</button>
+        </div>
       </section>
 
       <!-- Walzen: Buchstabe und Modus -->

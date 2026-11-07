@@ -43,8 +43,8 @@ test.describe("Best Practices im Markup", () => {
 
   test("Shake-Animation und Timer-Puls respektieren reduzierte Bewegung", async ({ page }) => {
     await page.emulateMedia({ reducedMotion: "reduce" });
-    await page.goto("/index.html");
-    await page.click("#newBtn");
+    await seedGame(page, makeGame());
+    await page.click("#resumeBtn");
     const anim = await page.$eval(".cat", (el) => {
       el.classList.add("shake");
       return getComputedStyle(el).animationName;

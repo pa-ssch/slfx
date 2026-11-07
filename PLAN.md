@@ -1,6 +1,6 @@
 # Stadt Land Fluss Extrem – Plan
 
-Stand: 7.11.2026 (Phase 1 bis 5 umgesetzt, 330 Tests in drei Browser-Projekten grün, `npm run check:sw` grün; offen nur die Punkte unter „Offen“).
+Stand: 8.11.2026 (Phase 1 bis 5 umgesetzt, Rückmeldungen vom 7. und 8.11. eingearbeitet, 366 Tests in drei Browser-Projekten grün, `npm run check:sw` grün; offen nur die Punkte unter „Offen“).
 
 ## Ziel
 
@@ -118,8 +118,8 @@ Spiellogik dieses Spiels.
 ### Phase 3 – Spiellogik
 
 - [x] Startseite (Weiterspielen / Neues Spiel / Wie geht das? / Impressum / Install-Hinweis)
-- [x] Spiel anlegen (Teams, Namen, Zielpunkte, Decks, Zähler, Speichern)
-- [x] Punkteleiste, Rundenstart, Rückfragen
+- [x] Spiel anlegen (Teams, Namen, Zielpunkte, Speichern)
+- [x] Punkteleiste, Rundenstart mit Deck-Auswahl je Runde (Rückmeldung vom 8.11.2026, vorher beim Anlegen), Rückfragen
 - [x] Buchstabenwalze und Moduswalze (inkl. Reduced Motion und Auto-Stopp)
 - [x] Countdown, Runde mit Timer und Kacheln, Wake Lock, Vibration
 - [x] Modi Normal, Gemütlich, Schnell, Blitz, Alles oder nichts, Alle raten mit
@@ -165,4 +165,6 @@ Spiellogik dieses Spiels.
   alten Teams und dem Ziel vorbelegt.
 - Rückfragen laufen über ein `<dialog>` im Skizzen-Look (mit `window.confirm` als
   Fallback für sehr alte Browser).
+- Die Decks werden je Runde am Rundenstart gewählt (Rückmeldung vom 8.11.2026); `game.decks`
+  hält die Auswahl der laufenden Runde, `slfx-decks` die letzte Auswahl als Vorbelegung.
 - Die Aufgabenstellung `stadt-land-fluss-extrem-prompt.md` liegt unversioniert im Ordner.

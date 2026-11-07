@@ -14,10 +14,11 @@ Stadt-Land-Fluss selbst ist gemeinfrei.
 
 ## So geht's
 
-1. **Ein Handy, 1 bis 5 Teams.** Unter „Neues Spiel“ Teams benennen, Zielpunkte
-   wählen (Vorgabe 100, Schritte von 10) und Decks ankreuzen. Ein Team allein spielt kooperativ
-   und sammelt Punkte.
-2. **Handy weitergeben.** Das Team, das dran ist, tippt auf „Bereit“. Die
+1. **Ein Handy, 1 bis 5 Teams.** Unter „Neues Spiel“ Teams benennen und
+   Zielpunkte wählen (Vorgabe 100, Schritte von 10). Ein Team allein spielt
+   kooperativ und sammelt Punkte.
+2. **Handy weitergeben.** Das Team, das dran ist, hakt die **Decks** für seine
+   Runde an (die letzte Auswahl ist vorangehakt) und tippt auf „Bereit“. Die
    beiden Walzen in einem Kasten laufen sofort los; ein Tipp auf **Stopp**
    liefert Buchstaben und Modus mit Zeit, beide Walzen laufen gemeinsam aus.
 3. **Runde.** Nach „Los“ und einem Countdown erscheinen acht Kategorien als
@@ -108,7 +109,7 @@ Deploy-Werkzeug. Die App selbst braucht davon nichts. Der Fahrplan steht in
 
 Das Spiel liegt im `localStorage` des Handys unter vier Einträgen:
 `slfx-game` (laufendes Spiel: Teams, Punkte, Ziel, Phase, aktuelle Runde),
-`slfx-used` (bereits gezeigte Kategorien), `slfx-decks` (gewählte Decks) und
+`slfx-used` (bereits gezeigte Kategorien), `slfx-decks` (zuletzt gewählte Decks) und
 `slfx-install` (nur nach „Nein, danke“ beim Install-Hinweis). Jeder Lesezugriff
 prüft die Daten streng; kaputte Einträge ergeben „kein Spiel“, eine kaputte Runde
 den Rundenstart desselben Teams mit erhaltenen Punkten.
@@ -127,8 +128,8 @@ var DECKS = {
 };
 ```
 
-Mehr ist nicht nötig. Die Checkbox beim Anlegen eines Spiels wird automatisch
-aus den Schlüsseln erzeugt, die Reihenfolge im Objekt ist die Anzeige-Reihenfolge.
+Mehr ist nicht nötig. Die Checkbox am Rundenstart wird automatisch aus den
+Schlüsseln erzeugt, die Reihenfolge im Objekt ist die Anzeige-Reihenfolge.
 
 Hinweise:
 
@@ -137,12 +138,14 @@ Hinweise:
   Eigene Texte, keine Übernahmen aus kommerziellen Spielen. Der Test
   „Datenqualität“ prüft Mindestgrößen (Normal 150, andere 40), Duplikate,
   Leerzeichen, Großschreibung und Länge.
-- Mindestens ein Deck muss ausgewählt sein. Beim ersten Öffnen sind nur die
-  Decks aus der Liste `DEFAULT_ON` am Anfang von `public/decks.js` aktiv
+- Die Decks werden **jede Runde neu** gewählt, auf der Ansicht „Team X ist
+  dran“. Mindestens ein Deck muss ausgewählt sein. Beim ersten Öffnen sind nur
+  die Decks aus der Liste `DEFAULT_ON` am Anfang von `public/decks.js` aktiv
   (aktuell nur „Normal“). Jedes andere, auch ein neu ergänztes, muss bewusst
   dazugeschaltet werden.
-- Die Auswahl wird im `localStorage` gespeichert. Ein entferntes oder
-  umbenanntes Deck wird dabei automatisch ignoriert.
+- Die letzte Auswahl wird im `localStorage` gespeichert und ist in der nächsten
+  Runde vorangehakt. Ein entferntes oder umbenanntes Deck wird dabei
+  automatisch ignoriert.
 - Bereits gezeigte Kategorien merkt sich jedes Handy ebenfalls im
   `localStorage`. Reichen die ungezeigten Kategorien der Auswahl nicht mehr für
   eine Runde, werden die restlichen genommen und der Merker für diese Auswahl
@@ -180,8 +183,8 @@ npm run check:sw      # wurde VERSION in sw.js nach Änderungen in public/ hochg
 Die Tests in `test/` laufen in drei Projekten (Pixel 7, iPhone 13, Desktop Chrome):
 
 - `app.test.js`: Startseite, Anleitung, Spiel anlegen (Teamanzahl, Namen,
-  Zielpunkte, Deck-Auswahl, Vorauswahl, Persistenz), Rundenstart, Punkteleiste,
-  Rückfragen.
+  Zielpunkte), Rundenstart mit Deck-Auswahl je Runde (Vorauswahl, Persistenz,
+  Wechsel zwischen Runden), Punkteleiste, Rückfragen.
 - `wheel.test.js`: Walzen mit gemocktem `Math.random`: laufen beim Betreten von
   selbst an, Ergebnis unabhängig vom Stopp-Zeitpunkt, beide halten gemeinsam auf
   dem Ergebnis, Auto-Stopp, Reduced-Motion-Pfad, Gewichte der Buchstaben und Modi,
