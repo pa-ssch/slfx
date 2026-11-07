@@ -790,6 +790,10 @@
   }
 
   // ---------- Rundenende und Punkte ----------
+  function pointsText(n) {
+    return n + (n === 1 ? " Punkt" : " Punkte");
+  }
+
   function roundPoints() {
     var m = mode();
     var r = game.round;
@@ -835,7 +839,7 @@
       info.textContent = all
         ? m.name + ": Alle " + n + " geschafft!"
         : m.name + ": Nur " + countDone() + " von " + n + " geschafft.";
-      points.textContent = all ? "+" + m.bonus + " Punkte" : "0 Punkte";
+      points.textContent = all ? "+" + pointsText(m.bonus) : pointsText(0);
       btn.textContent = "Bestätigen";
     } else {
       if (r.terms === null) r.terms = countDone();
@@ -844,7 +848,7 @@
       $("scoreValue").textContent = r.terms + " von " + n;
       $("scoreMinus").disabled = r.terms <= 0;
       $("scorePlus").disabled = r.terms >= n;
-      points.textContent = "+" + roundPoints() + " Punkte";
+      points.textContent = "+" + pointsText(roundPoints());
     }
     show("score");
   }
@@ -886,7 +890,7 @@
     stopTimer();
     $("turnTeam").textContent = activeTeam().name + " ist dran";
     var pass = Math.floor(game.roundNo / game.teams.length) + 1;
-    $("turnInfo").textContent = "Durchgang " + pass + " · Ziel: " + game.target + " Punkte";
+    $("turnInfo").textContent = "Durchgang " + pass + " · Ziel: " + pointsText(game.target);
     show("turn");
     keepAwake();
   }
@@ -906,7 +910,7 @@
       return t.score === best;
     });
     var title = $("endTitle");
-    if (game.teams.length === 1) title.textContent = order[0].name + ": " + best + " Punkte!";
+    if (game.teams.length === 1) title.textContent = order[0].name + ": " + pointsText(best) + "!";
     else if (winners.length === 1) title.textContent = winners[0].name + " gewinnt!";
     else
       title.textContent =
@@ -919,7 +923,7 @@
     var list = $("ranking");
     clear(list);
     order.forEach(function (t) {
-      var li = make("li", t.score === best ? "winner" : "", t.name + " – " + t.score + " Punkte");
+      var li = make("li", t.score === best ? "winner" : "", t.name + " – " + pointsText(t.score));
       list.appendChild(li);
     });
     show("end");

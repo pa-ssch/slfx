@@ -14,10 +14,10 @@ var RULES = {
   DEFAULT_TEAM_NAME: "Team ", // plus laufende Nummer
 
   // Zielpunkte: Ist die Vorgabe erreicht, wird der Durchgang zu Ende gespielt
-  DEFAULT_TARGET: 20,
+  DEFAULT_TARGET: 100,
   MIN_TARGET: 5,
-  MAX_TARGET: 200,
-  TARGET_STEP: 5,
+  MAX_TARGET: 500,
+  TARGET_STEP: 10, // je Runde gibt es bis zu 8 Punkte
 
   // Kategorien je Runde
   CATEGORIES_PER_ROUND: 8,
@@ -48,23 +48,39 @@ var RULES = {
   MODES: {
     normal: {
       name: "Normal",
-      seconds: 60,
+      seconds: 40,
       points: 1,
       weight: 5,
       minTeams: 1,
       text: "Ein Punkt je geschafftem Begriff.",
     },
-    double: {
-      name: "Doppelt",
-      seconds: 45,
-      points: 2,
+    long: {
+      name: "Gemütlich",
+      seconds: 60,
+      points: 1,
       weight: 2,
       minTeams: 1,
-      text: "Zwei Punkte je geschafftem Begriff, aber weniger Zeit.",
+      text: "Mehr Zeit, ein Punkt je geschafftem Begriff.",
+    },
+    short: {
+      name: "Schnell",
+      seconds: 20,
+      points: 1,
+      weight: 2,
+      minTeams: 1,
+      text: "Wenig Zeit, ein Punkt je geschafftem Begriff.",
+    },
+    flash: {
+      name: "Blitz",
+      seconds: 15,
+      points: 1,
+      weight: 1,
+      minTeams: 1,
+      text: "Ganz wenig Zeit, ein Punkt je geschafftem Begriff.",
     },
     allornothing: {
       name: "Alles oder nichts",
-      seconds: 45,
+      seconds: 80,
       bonus: 10,
       weight: 2,
       minTeams: 1,

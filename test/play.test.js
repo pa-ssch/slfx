@@ -116,19 +116,27 @@ test.describe("Vor Ablauf der Zeit fertig", () => {
   });
 
   test("Neuladen in der Runde: „Fertig“ bleibt verfügbar", async ({ page }) => {
-    await playRound(page, ready({ round: { mode: "double" } }));
+    await playRound(page, ready({ round: { mode: "short" } }));
     await tile(page, 0).click();
     await page.reload();
     await expect(page.locator("#play.active")).toBeVisible();
     await expect(page.locator("#doneBtn")).toHaveText("Fertig");
     await page.click("#doneBtn");
-    await expect(page.locator("#scorePoints")).toHaveText("+2 Punkte");
+    await expect(page.locator("#scorePoints")).toHaveText("+1 Punkt");
   });
 });
 
-test.describe("Modus Normal und Doppelt", () => {
-  for (const key of ["normal", "double"]) {
-    test(`${M[key].name}: ${M[key].points} Punkt(e) je Begriff, vorbelegt aus den Kacheln, korrigierbar`, async ({ page }) => {
+const TIMED = Object.keys(M).filter((k) => M[k].seconds > 0 && M[k].points);
+
+test.describe("Modi mit Timer und Punkten je Begriff", () => {
+  test("Zeiten: Normal 40 s, Gemütlich 60 s, Schnell 20 s, Blitz 15 s, Alles oder nichts 80 s", () => {
+    expect(TIMED.map((k) => [M[k].name, M[k].seconds])).toEqual([["Normal", 40], ["Gemütlich", 60], ["Schnell", 20], ["Blitz", 15]]);
+    expect(M.allornothing.seconds).toBe(80);
+    expect(M.everyone.seconds).toBe(0);
+  });
+
+  for (const key of TIMED) {
+    test(`${M[key].name} (${M[key].seconds} s): ${M[key].points} Punkt je Begriff, vorbelegt aus den Kacheln, korrigierbar`, async ({ page }) => {
       await playRound(page, ready({ names: ["Füchse", "Hasen"], round: { mode: key } }));
       await expect(page.locator("#timer")).toHaveText(String(M[key].seconds));
       for (const i of [0, 3, 4]) await tile(page, i).click();
@@ -140,6 +148,9 @@ test.describe("Modus Normal und Doppelt", () => {
       await page.click("#scorePlus");
       await expect(page.locator("#scoreValue")).toHaveText(`4 von ${N}`);
       await expect(page.locator("#scorePoints")).toHaveText(`+${4 * M[key].points} Punkte`);
+      for (let i = 0; i < 3; i++) await page.click("#scoreMinus");
+      await expect(page.locator("#scorePoints")).toHaveText(`+${M[key].points} Punkt`);
+      for (let i = 0; i < 3; i++) await page.click("#scorePlus");
       await page.click("#scoreMinus");
       await page.click("#scoreMinus");
       await expect(page.locator("#scoreValue")).toHaveText(`2 von ${N}`);
@@ -245,8 +256,8 @@ test.describe("Modus Alle raten mit", () => {
 test.describe("Spielende", () => {
   test("Zielpunkte erreicht: Durchgang wird zu Ende gespielt, dann Rangliste", async ({ page }) => {
     // Team 1 hat 18, Ziel 20, Team 2 noch nicht dran in diesem Durchgang
-    await playRound(page, ready({ names: ["Füchse", "Hasen"], scores: [18, 10], target: 20, roundNo: 2, round: { mode: "normal", done: [true, true, true, false, false, false, false, false] } }));
-    await page.clock.runFor(M.normal.seconds * 1000 + 250);
+    await playRound(page, ready({ names: ["Füchse", "Hasen"], scores: [18, 10], target: 20, roundNo: 2, round: { mode: "long", done: [true, true, true, false, false, false, false, false] } }));
+    await page.clock.runFor(M.long.seconds * 1000 + 250);
     await page.click("#doneBtn");
     await page.click("#scoreBtn");
     await expect(page.locator("#turn.active")).toBeVisible(); // noch kein Ende
@@ -258,7 +269,7 @@ test.describe("Spielende", () => {
     if (await page.locator("#everyone.active").isVisible()) {
       for (let i = 0; i < N; i++) await page.click("#evSkip");
     } else {
-      await page.clock.runFor(70000);
+      await page.clock.runFor(90000);
       await page.click("#doneBtn");
     }
     await page.click("#scoreBtn");
@@ -290,7 +301,7 @@ test.describe("Spielende", () => {
   });
 
   test("„Nochmal mit denselben Teams“ setzt Punkte zurück, „Neues Spiel“ öffnet das Anlegen vorbelegt", async ({ page }) => {
-    await seedGame(page, makeGame({ names: ["Füchse", "Hasen"], scores: [22, 9], phase: "score", roundNo: 5, lastLetter: "K", round: makeRound({ mode: "allornothing" }) }));
+    await seedGame(page, makeGame({ names: ["Füchse", "Hasen"], scores: [22, 9], target: 20, phase: "score", roundNo: 5, lastLetter: "K", round: makeRound({ mode: "allornothing" }) }));
     await page.click("#resumeBtn");
     await expect(page.locator("#score.active")).toBeVisible();
     await page.click("#scoreBtn");
@@ -305,7 +316,7 @@ test.describe("Spielende", () => {
     await page.click("#newBtn");
     await page.click('#setup [data-go="home"]');
     // Endbildschirm erneut über die Punkteansicht erreichen und "Nochmal" tippen
-    await seedGame(page, makeGame({ names: ["Füchse", "Hasen"], scores: [22, 9], phase: "score", roundNo: 5, lastLetter: "K", round: makeRound({ mode: "allornothing" }) }));
+    await seedGame(page, makeGame({ names: ["Füchse", "Hasen"], scores: [22, 9], target: 20, phase: "score", roundNo: 5, lastLetter: "K", round: makeRound({ mode: "allornothing" }) }));
     await page.click("#resumeBtn");
     await page.click("#scoreBtn");
     await page.click("#againBtn");

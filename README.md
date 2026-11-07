@@ -15,7 +15,7 @@ Stadt-Land-Fluss selbst ist gemeinfrei.
 ## So geht's
 
 1. **Ein Handy, 1 bis 5 Teams.** Unter „Neues Spiel“ Teams benennen, Zielpunkte
-   wählen (Vorgabe 20) und Decks ankreuzen. Ein Team allein spielt kooperativ
+   wählen (Vorgabe 100, Schritte von 10) und Decks ankreuzen. Ein Team allein spielt kooperativ
    und sammelt Punkte.
 2. **Handy weitergeben.** Das Team, das dran ist, tippt auf „Bereit“. Die
    beiden Walzen in einem Kasten laufen sofort los; ein Tipp auf **Stopp**
@@ -42,9 +42,11 @@ Markierungen) oder zum Rundenstart desselben Teams. Punkte gehen nie verloren.
 
 | Modus | Zeit | Punkte | Gewicht |
 | --- | --- | --- | --- |
-| Normal | 60 s | 1 je geschafftem Begriff | 5 |
-| Doppelt | 45 s | 2 je geschafftem Begriff | 2 |
-| Alles oder nichts | 45 s | alle acht in der Zeit: 10 Punkte, der Timer stoppt sofort; sonst 0 | 2 |
+| Normal | 40 s | 1 je geschafftem Begriff | 5 |
+| Gemütlich | 60 s | 1 je geschafftem Begriff | 2 |
+| Schnell | 20 s | 1 je geschafftem Begriff | 2 |
+| Blitz | 15 s | 1 je geschafftem Begriff | 1 |
+| Alles oder nichts | 80 s | alle acht in der Zeit: 10 Punkte, der Timer stoppt sofort; sonst 0 | 2 |
 | Alle raten mit | kein Timer | Begriffe nacheinander einzeln groß, das schnellste Team ruft und bekommt per Tipp auf seinen Namen 1 Punkt, „Überspringen“ bei Einigkeit | 2, erst ab 2 Teams |
 
 ### Walze
@@ -68,7 +70,7 @@ Tests aus derselben Datei gelesen:
 | --- | --- |
 | `MIN_TEAMS`, `MAX_TEAMS` | 1, 5 |
 | `MAX_NAME_LENGTH` | 20 Zeichen, getrimmt; leer ergibt „Team n“ |
-| `DEFAULT_TARGET`, `MIN_TARGET`, `MAX_TARGET`, `TARGET_STEP` | 20, 5, 200, 5 |
+| `DEFAULT_TARGET`, `MIN_TARGET`, `MAX_TARGET`, `TARGET_STEP` | 100, 5, 500, 10 (je Runde gibt es bis zu 8 Punkte) |
 | `CATEGORIES_PER_ROUND` | 8 |
 | `COUNTDOWN_SECONDS`, `URGENT_SECONDS` | 3, 5 |
 | `LETTER_WEIGHTS` | A 6, B 8, C 2, D 5, E 5, F 6, G 6, H 7, I 2, J 2, K 8, L 5, M 7, N 3, O 2, P 5, Q 0, R 5, S 10, T 5, U 2, V 3, W 6, X 0, Y 0, Z 3 (0 = nicht auf der Walze) |

@@ -199,7 +199,7 @@ test.describe("Gewichte und Ausschlüsse", () => {
       counts[m] = (counts[m] || 0) + 1;
     }
     expect(Object.keys(counts).sort()).toEqual(wheelModes(3).sort());
-    expect(counts.normal).toBeGreaterThan(Math.max(counts.double, counts.allornothing, counts.everyone));
+    expect(counts.normal).toBeGreaterThan(Math.max(...Object.keys(counts).filter((k) => k !== "normal").map((k) => counts[k])));
   });
 
   test("bei einem Team steht „Alle raten mit“ nicht auf der Walze und wird nie gezogen", async ({ page }) => {

@@ -22,7 +22,7 @@ async function playThrough(page) {
     for (let i = 0; i < RULES.CATEGORIES_PER_ROUND; i++) await page.click("#evSkip");
   } else {
     await page.locator("#tiles .tile").first().click();
-    await page.clock.runFor(70000);
+    await page.clock.runFor(90000);
     await page.click("#doneBtn");
   }
   await page.click("#scoreBtn");

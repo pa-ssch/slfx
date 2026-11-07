@@ -25,10 +25,10 @@ test.describe("Neuladen", () => {
   });
 
   test("Zeit beim Neuladen schon abgelaufen: Punkteansicht mit den Markierungen", async ({ page }) => {
-    await seedGame(page, makeGame({ phase: "play", round: makeRound({ categories: CATS, mode: "double", endsAt: 1000, done: [true, true, false, false, false, false, false, false] }) }));
+    await seedGame(page, makeGame({ phase: "play", round: makeRound({ categories: CATS, mode: "short", endsAt: 1000, done: [true, true, false, false, false, false, false, false] }) }));
     await expect(page.locator("#score.active")).toBeVisible();
     await expect(page.locator("#scoreValue")).toHaveText(`2 von ${N}`);
-    await expect(page.locator("#scorePoints")).toHaveText("+4 Punkte");
+    await expect(page.locator("#scorePoints")).toHaveText("+2 Punkte");
     expect((await readGame(page)).phase).toBe("score");
   });
 
@@ -41,12 +41,12 @@ test.describe("Neuladen", () => {
   });
 
   test("nach den Walzen (ready): Walzen stehen auf dem Ergebnis, „Los“ sichtbar", async ({ page }) => {
-    await seedGame(page, makeGame({ phase: "ready", round: makeRound({ categories: CATS, letter: "H", mode: "double" }) }));
+    await seedGame(page, makeGame({ phase: "ready", round: makeRound({ categories: CATS, letter: "H", mode: "long" }) }));
     await page.click("#resumeBtn");
     await expect(page.locator("#wheel.active")).toBeVisible();
     await expect(page.locator("#goBtn")).toBeVisible();
     await expect(page.locator("#spinBtn")).toBeHidden();
-    await expect(page.locator("#wheelResult")).toContainText("H – Doppelt");
+    await expect(page.locator("#wheelResult")).toContainText("H – Gemütlich");
     const game = await readGame(page);
     expect(game.round.letter).toBe("H");
     expect(game.round.categories).toEqual(CATS);

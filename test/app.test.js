@@ -130,7 +130,7 @@ test.describe("Spiel anlegen", () => {
   test("Zielpunkte: Schritte, Mindestwert, Höchstwert, Eingabe wird gerundet", async ({ page }) => {
     await page.click("#targetPlus");
     await expect(page.locator("#target")).toHaveValue(String(RULES.DEFAULT_TARGET + RULES.TARGET_STEP));
-    for (let i = 0; i < 20; i++) await page.click("#targetMinus");
+    for (let i = 0; i < 12; i++) await page.click("#targetMinus");
     await expect(page.locator("#target")).toHaveValue(String(RULES.MIN_TARGET));
     await page.fill("#target", "3");
     await page.click("#startBtn");
@@ -200,21 +200,21 @@ test.describe("Spiel anlegen", () => {
   test("„Los geht's“ speichert das Spiel mit Teams, Ziel und Decks", async ({ page }) => {
     await page.click("#teamPlus");
     await page.fill("#team-2", "Die Dritten");
-    await page.fill("#target", "35");
+    await page.fill("#target", "150");
     await page.check('#decks input[value="Weihnachten"]');
     await page.click("#startBtn");
     const game = await readGame(page);
     expect(game).toMatchObject({
       v: 1,
       teams: [{ name: "Team 1", score: 0 }, { name: "Team 2", score: 0 }, { name: "Die Dritten", score: 0 }],
-      target: 35,
+      target: 150,
       decks: ["Normal", "Weihnachten"],
       roundNo: 0,
       current: 0,
       phase: "turn",
       round: null,
     });
-    await expect(page.locator("#turnInfo")).toContainText("Ziel: 35 Punkte");
+    await expect(page.locator("#turnInfo")).toContainText("Ziel: 150 Punkte");
   });
 
   test("Touch-Ziele: Chips, Stepper und Start-Button mindestens 44 px", async ({ page }) => {
