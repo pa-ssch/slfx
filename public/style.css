@@ -722,10 +722,10 @@ body.in-game .scorebar {
   min-height: 44px;
   min-width: 0;
   overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.3em 0.5em;
+  /* Bewusst kein display: flex auf dem Button: WebKit begrenzt den Text dann nicht
+     auf die Kachelbreite. Buttons zentrieren ihren Inhalt vertikal von selbst. */
+  display: block;
+  padding: 6px 8px; /* fest in px: die Schriftgröße wird per JS gesetzt, die Polsterung darf nicht mitwachsen */
   border: 2px solid #000;
   border-radius: 15px 225px 15px 255px / 255px 15px 225px 15px;
   background: #fff;
@@ -741,22 +741,34 @@ body.in-game .scorebar {
 }
 .tile-text {
   display: block;
-  max-width: 100%;
-  overflow-wrap: anywhere;
-  hyphens: auto;
+  width: 100%;
+  overflow-wrap: normal; /* nur an Leerzeichen umbrechen, die Schriftgröße passt sich an */
+  text-wrap: balance; /* gleichmäßig lange Zeilen, wo der Browser es kann */
 }
+/* Markiert: nichts, was das Layout ändert (kein Fett, keine Rahmenbreite),
+   sonst bricht der Text beim Antippen plötzlich anders um */
 .tile[aria-pressed="true"] {
-  border-width: 3px;
-  box-shadow: 3px 3px 0 #000;
-  font-weight: 700;
+  box-shadow:
+    inset 0 0 0 2px #000,
+    3px 3px 0 #000;
 }
+/* Haken als kleines Abzeichen mit weißem Grund, damit er über dem Text lesbar bleibt */
 .tile[aria-pressed="true"]::after {
   content: "\2713";
   position: absolute;
-  top: 0;
-  right: 0.25em;
-  font-size: 1.6em;
+  top: 3px;
+  right: 3px;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 700;
   line-height: 1;
+  background: #fff;
+  border: 2px solid #000;
+  border-radius: 50% 45% 55% 50% / 45% 55% 45% 55%;
 }
 .tile:disabled {
   cursor: default;

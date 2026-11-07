@@ -165,6 +165,9 @@ Spiellogik dieses Spiels.
   alten Teams und dem Ziel vorbelegt.
 - Rückfragen laufen über ein `<dialog>` im Skizzen-Look (mit `window.confirm` als
   Fallback für sehr alte Browser).
-- Die Decks werden je Runde am Rundenstart gewählt (Rückmeldung vom 8.11.2026); `game.decks`
-  hält die Auswahl der laufenden Runde, `slfx-decks` die letzte Auswahl als Vorbelegung.
+- Die Decks werden je Runde am Rundenstart gewählt, Vorbelegung immer `DEFAULT_ON`, nichts
+  wird gemerkt (Rückmeldung vom 8.11.2026); `game.decks` hält die Auswahl der laufenden Runde.
+  Der Local-Storage-Eintrag `slfx-decks` ist damit entfallen.
+- Kacheltexte: größtmögliche Schrift per Intervallhalbierung, Umbruch nur an Leerzeichen,
+  Markieren ändert weder Schriftschnitt noch Rahmenbreite (Rückmeldung vom 8.11.2026).
 - Die Aufgabenstellung `stadt-land-fluss-extrem-prompt.md` liegt unversioniert im Ordner.

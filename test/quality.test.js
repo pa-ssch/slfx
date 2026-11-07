@@ -69,7 +69,7 @@ test.describe("Impressum und Datenschutz", () => {
     for (const s of [
       "9xb", "Silas Schnurr", "Theodor-Heuss-Straße 14", "77815 Bühl", "nicht kommerzielles Angebot", "Haftungsausschluss",
       "Community", "nicht einzeln geprüft", "Abgrenzung", "Stadt Land Vollpfosten", "Denkriesen", "gemeinfrei",
-      "Datenschutzerklärung", "GitHub Pages", "Local Storage", "slfx-game", "slfx-used", "slfx-decks", "slfx-install", "Patrick Hand",
+      "Datenschutzerklärung", "GitHub Pages", "Local Storage", "slfx-game", "slfx-used", "slfx-install", "Patrick Hand",
     ]) {
       expect(text, s).toContain(s);
     }

@@ -1,6 +1,6 @@
 // Startseite, Anleitung, Spiel anlegen
 const { test, expect } = require("@playwright/test");
-const { RULES, DECKS, DEFAULT_ON, KEYS, categoriesOf, watchErrors, readGame, makeGame, seedGame, createGame } = require("./helpers");
+const { RULES, DECKS, DEFAULT_ON, KEYS, categoriesOf, watchErrors, readGame, makeGame, seedGame, createGame, selectDecks } = require("./helpers");
 
 const ALL = Object.keys(DECKS);
 const TOTAL = categoriesOf(ALL).length;
@@ -203,23 +203,33 @@ test.describe("Rundenstart: Decks je Runde", () => {
     for (const h of sizes) expect(h).toBeGreaterThanOrEqual(44);
   });
 
-  test("Deck-Auswahl wird gespeichert, letztes Deck bleibt aktiv", async ({ page }) => {
+  test("letztes Deck bleibt aktiv (mindestens eins)", async ({ page }) => {
     const [keep, other] = ALL;
     await page.check(`#decks input[value="${other}"]`);
-    expect(await page.evaluate((k) => localStorage.getItem(k), KEYS.decks)).toBe(JSON.stringify([keep, other]));
     await page.uncheck(`#decks input[value="${other}"]`);
-    expect(await page.evaluate((k) => localStorage.getItem(k), KEYS.decks)).toBe(JSON.stringify([keep]));
     await page.click(`#decks input[value="${keep}"]`);
     await expect(page.locator(`#decks input[value="${keep}"]`)).toBeChecked();
     await expect(page.locator(`#decks input[value="${keep}"]`).locator("..")).toHaveClass(/shake/);
   });
 
-  test("Deck-Auswahl überlebt Neuladen, unbekannte Namen werden ignoriert", async ({ page }) => {
-    await page.evaluate(([k, c]) => localStorage.setItem(k, JSON.stringify([c, "GibtEsNicht"])), [KEYS.decks, ALL[1]]);
+  test("jede Runde beginnt mit DEFAULT_ON, nichts wird gemerkt, auch nicht über Neuladen", async ({ page }) => {
+    await selectDecks(page, ["NSFW", "Weihnachten"]);
     await page.reload();
     await page.click("#resumeBtn");
-    const checked = await page.$$eval("#decks input", (bs) => bs.filter((b) => b.checked).map((b) => b.value));
-    expect(checked).toEqual([ALL[1]]);
+    const checked = () => page.$$eval("#decks input", (bs) => bs.filter((b) => b.checked).map((b) => b.value));
+    expect(await checked()).toEqual(DEFAULT_ON);
+    await selectDecks(page, ["Weihnachten"]);
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.click("#readyBtn");
+    await expect(page.locator("#goBtn")).toBeVisible();
+    const game = await readGame(page);
+    expect(game.decks).toEqual(["Weihnachten"]);
+    // Nächste Runde: wieder nur die Vorgabe
+    await page.evaluate(([k, g]) => localStorage.setItem(k, JSON.stringify({ ...g, phase: "turn", round: null, roundNo: 1 })), [KEYS.game, game]);
+    await page.reload();
+    await page.click("#resumeBtn");
+    expect(await checked()).toEqual(DEFAULT_ON);
+    expect(await page.evaluate(() => Object.keys(localStorage).sort())).toEqual([KEYS.game, KEYS.used]);
   });
 
   test("Kategorienzähler folgt der Auswahl und den gezeigten Kategorien", async ({ page }) => {
@@ -228,23 +238,20 @@ test.describe("Rundenstart: Decks je Runde", () => {
     const extra = ALL.find((c) => !DEFAULT_ON.includes(c));
     await page.check(`#decks input[value="${extra}"]`);
     await expect(count).toHaveText(`${categoriesOf([...DEFAULT_ON, extra]).length} Kategorien`);
+    // Ein Deck allein, davon drei Kategorien schon gezeigt und eine aus einem anderen Deck
     const small = ALL[ALL.length - 1];
     const shown = DECKS[small].slice(0, 3);
     const foreign = DECKS[ALL[0]].find((w) => !DECKS[small].includes(w));
-    await page.evaluate(
-      ([k1, k2, c, used]) => {
-        localStorage.setItem(k1, JSON.stringify([c]));
-        localStorage.setItem(k2, JSON.stringify(used));
-      },
-      [KEYS.decks, KEYS.used, small, [...shown, foreign]],
-    );
+    await page.evaluate(([k, used]) => localStorage.setItem(k, JSON.stringify(used)), [KEYS.used, [...shown, foreign]]);
     await page.reload();
     await page.click("#resumeBtn");
+    await selectDecks(page, [small]);
     const n = DECKS[small].length;
     await expect(count).toHaveText(`${n} Kategorien, davon ${n - 3} noch nicht gezeigt`);
     await page.evaluate(([k, used]) => localStorage.setItem(k, JSON.stringify(used)), [KEYS.used, DECKS[small]]);
     await page.reload();
     await page.click("#resumeBtn");
+    await selectDecks(page, [small]);
     await expect(count).toHaveText(`${n} Kategorien, alle schon gezeigt`);
   });
 
@@ -266,9 +273,9 @@ test.describe("Rundenstart: Decks je Runde", () => {
     await page.evaluate(([k, g]) => localStorage.setItem(k, JSON.stringify({ ...g, phase: "turn", round: null })), [KEYS.game, game]);
     await page.reload();
     await page.click("#resumeBtn");
-    await expect(page.locator('#decks input[value="Weihnachten"]')).toBeChecked(); // letzte Auswahl bleibt
-    await page.check('#decks input[value="NSFW"]');
-    await page.uncheck('#decks input[value="Weihnachten"]');
+    await expect(page.locator('#decks input[value="Normal"]')).toBeChecked(); // wieder die Vorgabe
+    await expect(page.locator('#decks input[value="Weihnachten"]')).not.toBeChecked();
+    await selectDecks(page, ["NSFW"]);
     await page.click("#readyBtn");
     await expect(page.locator("#goBtn")).toBeVisible();
     game = await readGame(page);

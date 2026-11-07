@@ -12,7 +12,6 @@
 
   var GAME_KEY = "slfx-game";
   var USED_KEY = "slfx-used";
-  var DECKS_KEY = "slfx-decks";
   var INSTALL_KEY = "slfx-install";
 
   var PHASES = ["turn", "wheel", "ready", "play", "score", "end"];
@@ -109,13 +108,6 @@
       return on.indexOf(d) !== -1;
     });
     return def.length > 0 ? def : all.slice();
-  }
-  function loadSelectedDecks() {
-    var valid = validDecks(readJSON(DECKS_KEY));
-    return valid.length > 0 ? valid : defaultDecks();
-  }
-  function saveSelectedDecks(list) {
-    writeJSON(DECKS_KEY, list);
   }
   // Alle Kategorien der gewählten Decks, ohne Doppelte
   function activeCategories(decks) {
@@ -605,21 +597,27 @@
     if (game.round.mode === "allornothing" && allDone()) endPlay("Geschafft!");
   }
 
-  // Kacheltexte so verkleinern, dass sie in die Kachel passen
+  // Kacheltexte so groß wie möglich: größte Schriftgröße, bei der der Text (mit
+  // Umbrüchen an Leerzeichen) in die Kachel passt, per Intervallhalbierung
+  var TILE_MIN_FONT = 10;
+  var TILE_MAX_FONT = 48;
   function fitTiles() {
     var tiles = document.querySelectorAll("#tiles .tile");
     for (var i = 0; i < tiles.length; i++) {
       var tile = tiles[i];
       var span = tile.firstChild;
-      tile.style.fontSize = "";
-      var size = parseFloat(getComputedStyle(tile).fontSize);
       var cs = getComputedStyle(tile);
       var maxW = tile.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
       var maxH = tile.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
-      while (size > 10 && (span.scrollHeight > maxH || span.scrollWidth > maxW)) {
-        size -= 1;
-        tile.style.fontSize = size + "px";
+      var lo = TILE_MIN_FONT;
+      var hi = Math.max(lo, Math.min(TILE_MAX_FONT, Math.floor(maxH / 2.2)));
+      while (lo < hi) {
+        var mid = Math.ceil((lo + hi) / 2);
+        tile.style.fontSize = mid + "px";
+        if (span.scrollHeight <= maxH && span.scrollWidth <= maxW) lo = mid;
+        else hi = mid - 1;
       }
+      tile.style.fontSize = lo + "px";
     }
   }
 
@@ -900,7 +898,7 @@
     $("turnTeam").textContent = activeTeam().name + " ist dran";
     var pass = Math.floor(game.roundNo / game.teams.length) + 1;
     $("turnInfo").textContent = "Durchgang " + pass + " · Ziel: " + pointsText(game.target);
-    // Die Decks werden jede Runde neu gewählt, die letzte Auswahl ist vorangehakt
+    // Die Decks werden jede Runde neu gewählt, Vorgabe ist immer DEFAULT_ON
     buildDeckList();
     show("turn");
     keepAwake();
@@ -909,7 +907,7 @@
   // "Bereit": Deck-Auswahl dieser Runde übernehmen, dann die Walzen
   function onReady() {
     var decks = selectedDecksFromUI();
-    game.decks = decks.length > 0 ? decks : loadSelectedDecks();
+    game.decks = decks.length > 0 ? decks : defaultDecks();
     saveGame();
     showWheel();
   }
@@ -1057,9 +1055,10 @@
     input.value = clampTarget(clampTarget(input.value) + delta);
   }
 
+  // Deck-Checkboxen am Rundenstart: jede Runde frisch mit DEFAULT_ON, nichts wird gemerkt
   function buildDeckList() {
     var box = $("decks");
-    var selected = loadSelectedDecks();
+    var selected = defaultDecks();
     clear(box);
     allDecks().forEach(function (name) {
       var label = make("label", "cat");
@@ -1090,12 +1089,11 @@
       e.target.parentNode.classList.add("shake");
       return;
     }
-    saveSelectedDecks(list);
     updatePoolCount();
   }
   // Unter den Decks: Größe der Auswahl und wie viele davon noch nicht gezeigt wurden
   function updatePoolCount() {
-    var cats = activeCategories(loadSelectedDecks());
+    var cats = activeCategories(selectedDecksFromUI());
     var used = loadUsed();
     var left = cats.filter(function (c) {
       return used.indexOf(c) === -1;
@@ -1110,7 +1108,7 @@
     var inputs = document.querySelectorAll("#teams input");
     var names = [];
     for (var i = 0; i < inputs.length; i++) names.push(inputs[i].value);
-    newGame(names, clampTarget($("target").value), loadSelectedDecks());
+    newGame(names, clampTarget($("target").value), defaultDecks());
     showTurn();
   }
 

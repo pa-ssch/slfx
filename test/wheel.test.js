@@ -3,7 +3,7 @@
 const { test, expect } = require("@playwright/test");
 const {
   RULES, WHEEL_LETTERS, LETTERS, DECKS, categoriesOf, wheelModes, modeLabel, expectedLetter, expectedMode,
-  watchErrors, fixRandom, setRandom, readGame, makeGame, seedGame, spinInstant, reelOffset,
+  watchErrors, fixRandom, setRandom, readGame, makeGame, seedGame, selectDecks, spinInstant, reelOffset,
 } = require("./helpers");
 
 const W = RULES.WHEEL;
@@ -268,11 +268,9 @@ test.describe("Gewichte und Ausschlüsse", () => {
   });
 
   test("Kategorien der Runde kommen aus den gewählten Decks, acht Stück, keine doppelt", async ({ page }) => {
-    // Die Auswahl der Runde kommt von den Checkboxen am Rundenstart (letzte Auswahl im Speicher)
-    await seedGame(page, makeGame());
-    await page.evaluate(() => localStorage.setItem("slfx-decks", JSON.stringify(["Weihnachten"])));
-    await page.click("#resumeBtn");
-    await expect(page.locator('#decks input[value="Weihnachten"]')).toBeChecked();
+    // Die Auswahl der Runde kommt von den Checkboxen am Rundenstart
+    await openTurn(page);
+    await selectDecks(page, ["Weihnachten"]);
     const game = await spinInstant(page);
     expect(game.decks).toEqual(["Weihnachten"]);
     expect(game.round.categories).toHaveLength(RULES.CATEGORIES_PER_ROUND);

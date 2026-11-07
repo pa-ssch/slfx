@@ -12,7 +12,7 @@ const { RULES } = new Function(rulesSrc + ";return { RULES: RULES };")();
 const { DECKS, DEFAULT_ON } = new Function(decksSrc + ";return { DECKS: DECKS, DEFAULT_ON: DEFAULT_ON };")();
 
 // Local-Storage-Einträge, wie sie die Datenschutzerklärung nennt
-const KEYS = { game: "slfx-game", used: "slfx-used", decks: "slfx-decks", install: "slfx-install" };
+const KEYS = { game: "slfx-game", used: "slfx-used", install: "slfx-install" };
 
 const N = RULES.CATEGORIES_PER_ROUND;
 const LETTERS = Object.keys(RULES.LETTER_WEIGHTS);
@@ -108,11 +108,9 @@ async function seedGame(page, game) {
   return game;
 }
 
-// Spiel über die Oberfläche anlegen (Standard: 2 Teams, Vorgabe-Zielpunkte, Deck "Normal")
+// Spiel über die Oberfläche anlegen (Standard: 2 Teams, Vorgabe-Zielpunkte)
 async function createGame(page, o = {}) {
   await page.goto("/index.html");
-  if (o.decks) await page.evaluate(([k, d]) => localStorage.setItem(k, JSON.stringify(d)), [KEYS.decks, o.decks]);
-  await page.reload();
   await page.click("#newBtn");
   const n = o.teams || (o.names ? o.names.length : 2);
   while ((await page.locator("#teams input").count()) < n) await page.click("#teamPlus");
@@ -121,6 +119,13 @@ async function createGame(page, o = {}) {
   if (o.target) await page.fill("#target", String(o.target));
   await page.click("#startBtn");
   await expect(page.locator("#turn.active")).toBeVisible();
+}
+
+// Decks am Rundenstart ankreuzen: erst die gewünschten setzen, dann die anderen abwählen
+// (so bleibt nie keins übrig)
+async function selectDecks(page, decks) {
+  for (const d of decks) await page.check(`#decks input[value="${d}"]`);
+  for (const d of Object.keys(DECKS)) if (!decks.includes(d)) await page.uncheck(`#decks input[value="${d}"]`);
 }
 
 // Von "Bereit" zur Walze: bei reduzierter Bewegung steht das Ergebnis sofort
@@ -204,5 +209,5 @@ module.exports = {
   PUBLIC, RULES, DECKS, DEFAULT_ON, KEYS, N, LETTERS, WHEEL_LETTERS,
   wheelModes, modeLabel, categoriesOf, expectedLetter, expectedMode,
   watchErrors, fixRandom, setRandom, readGame, readUsed, makeRound, makeGame, seedGame, createGame,
-  spinInstant, startRound, fits, checkTiles, listFiles, reelOffset,
+  selectDecks, spinInstant, startRound, fits, checkTiles, listFiles, reelOffset,
 };

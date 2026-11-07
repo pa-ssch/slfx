@@ -14,7 +14,6 @@ async function playThrough(page) {
   await page.click("#startBtn");
   const second = page.locator("#decks input").nth(1);
   await second.check();
-  await second.uncheck();
   await spinInstant(page);
   await page.clock.install();
   await startRound(page);
@@ -53,19 +52,19 @@ test.describe("Was die Datenschutzerklärung verspricht", () => {
     expect(await page.evaluate(() => document.cookie)).toBe("");
   });
 
-  test("im Browser liegen genau die drei genannten Local-Storage-Einträge", async ({ page }) => {
+  test("im Browser liegen genau die zwei genannten Local-Storage-Einträge", async ({ page }) => {
     await playThrough(page);
     const storage = await page.evaluate(() => ({ local: Object.keys(localStorage).sort(), session: sessionStorage.length }));
-    expect(storage.local).toEqual([KEYS.decks, KEYS.game, KEYS.used]);
+    expect(storage.local).toEqual([KEYS.game, KEYS.used]);
     expect(storage.session).toBe(0);
   });
 
-  test("nach „Nein, danke“ beim Install-Hinweis kommt genau der vierte genannte Eintrag dazu", async ({ page }) => {
+  test("nach „Nein, danke“ beim Install-Hinweis kommt genau der dritte genannte Eintrag dazu", async ({ page }) => {
     await playThrough(page);
     await page.evaluate(() => window.dispatchEvent(new Event("beforeinstallprompt", { cancelable: true })));
     await page.click("#installDismiss");
     const keys = await page.evaluate(() => Object.keys(localStorage).sort());
-    expect(keys).toEqual([KEYS.decks, KEYS.game, KEYS.install, KEYS.used]);
+    expect(keys).toEqual([KEYS.game, KEYS.install, KEYS.used]);
   });
 });
 
@@ -107,7 +106,7 @@ test.describe("Regeln im Quelltext", () => {
     }
   });
 
-  test("Local-Storage-Einträge mit Präfix, genau die vier aus der Datenschutzerklärung", () => {
+  test("Local-Storage-Einträge mit Präfix, genau die drei aus der Datenschutzerklärung", () => {
     const app = read("app.js");
     const keys = [...app.matchAll(/"(slfx-[a-z-]+)"/g)].map((m) => m[1]);
     expect([...new Set(keys)].sort()).toEqual(Object.values(KEYS).sort());

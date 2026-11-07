@@ -1,6 +1,6 @@
 // Neuladen mitten im Spiel, kaputter Speicher, keine Wiederholung der Kategorien
 const { test, expect } = require("@playwright/test");
-const { RULES, N, DECKS, KEYS, watchErrors, readGame, readUsed, makeGame, makeRound, seedGame, createGame, spinInstant } = require("./helpers");
+const { RULES, N, DECKS, KEYS, watchErrors, readGame, readUsed, makeGame, makeRound, seedGame, createGame, selectDecks, spinInstant } = require("./helpers");
 
 const CATS = DECKS.Normal.slice(0, N);
 
@@ -139,9 +139,10 @@ test.describe("Keine Wiederholung der Kategorien", () => {
     const deck = "Weihnachten";
     const all = DECKS[deck];
     const fullRounds = Math.floor(all.length / N);
-    await createGame(page, { decks: [deck] });
+    await createGame(page);
     const drawn = [];
     for (let r = 0; r < fullRounds; r++) {
+      await selectDecks(page, [deck]);
       const game = await spinInstant(page);
       expect(new Set(game.round.categories).size, `Runde ${r + 1}`).toBe(N);
       drawn.push(...game.round.categories);
@@ -155,6 +156,7 @@ test.describe("Keine Wiederholung der Kategorien", () => {
     for (const c of drawn) expect(all).toContain(c);
     // Rest reicht nicht mehr für acht: Rest plus Auffüllung aus dem zurückgesetzten Pool
     const rest = all.filter((c) => !drawn.includes(c));
+    await selectDecks(page, [deck]);
     const game = await spinInstant(page);
     expect(new Set(game.round.categories).size).toBe(N);
     for (const c of rest) expect(game.round.categories).toContain(c);

@@ -18,7 +18,7 @@ Stadt-Land-Fluss selbst ist gemeinfrei.
    Zielpunkte wählen (Vorgabe 100, Schritte von 10). Ein Team allein spielt
    kooperativ und sammelt Punkte.
 2. **Handy weitergeben.** Das Team, das dran ist, hakt die **Decks** für seine
-   Runde an (die letzte Auswahl ist vorangehakt) und tippt auf „Bereit“. Die
+   Runde an (vorangehakt ist immer nur „Normal“) und tippt auf „Bereit“. Die
    beiden Walzen in einem Kasten laufen sofort los; ein Tipp auf **Stopp**
    liefert Buchstaben und Modus mit Zeit, beide Walzen laufen gemeinsam aus.
 3. **Runde.** Nach „Los“ und einem Countdown erscheinen acht Kategorien als
@@ -107,10 +107,10 @@ Alles außerhalb von `public/` (`test/`, `scripts/`, `.github/`, `package.json`,
 Deploy-Werkzeug. Die App selbst braucht davon nichts. Der Fahrplan steht in
 [PLAN.md](PLAN.md).
 
-Das Spiel liegt im `localStorage` des Handys unter vier Einträgen:
-`slfx-game` (laufendes Spiel: Teams, Punkte, Ziel, Phase, aktuelle Runde),
-`slfx-used` (bereits gezeigte Kategorien), `slfx-decks` (zuletzt gewählte Decks) und
-`slfx-install` (nur nach „Nein, danke“ beim Install-Hinweis). Jeder Lesezugriff
+Das Spiel liegt im `localStorage` des Handys unter drei Einträgen:
+`slfx-game` (laufendes Spiel: Teams, Punkte, Ziel, Phase, aktuelle Runde samt
+Deck-Auswahl), `slfx-used` (bereits gezeigte Kategorien) und `slfx-install`
+(nur nach „Nein, danke“ beim Install-Hinweis). Jeder Lesezugriff
 prüft die Daten streng; kaputte Einträge ergeben „kein Spiel“, eine kaputte Runde
 den Rundenstart desselben Teams mit erhaltenen Punkten.
 
@@ -139,13 +139,10 @@ Hinweise:
   „Datenqualität“ prüft Mindestgrößen (Normal 150, andere 40), Duplikate,
   Leerzeichen, Großschreibung und Länge.
 - Die Decks werden **jede Runde neu** gewählt, auf der Ansicht „Team X ist
-  dran“. Mindestens ein Deck muss ausgewählt sein. Beim ersten Öffnen sind nur
-  die Decks aus der Liste `DEFAULT_ON` am Anfang von `public/decks.js` aktiv
-  (aktuell nur „Normal“). Jedes andere, auch ein neu ergänztes, muss bewusst
-  dazugeschaltet werden.
-- Die letzte Auswahl wird im `localStorage` gespeichert und ist in der nächsten
-  Runde vorangehakt. Ein entferntes oder umbenanntes Deck wird dabei
-  automatisch ignoriert.
+  dran“. Vorangehakt sind jedes Mal nur die Decks aus der Liste `DEFAULT_ON` am
+  Anfang von `public/decks.js` (aktuell nur „Normal“); die Auswahl wird nicht
+  gemerkt. Jedes andere Deck, auch ein neu ergänztes, muss bewusst für die Runde
+  dazugeschaltet werden. Mindestens ein Deck muss ausgewählt sein.
 - Bereits gezeigte Kategorien merkt sich jedes Handy ebenfalls im
   `localStorage`. Reichen die ungezeigten Kategorien der Auswahl nicht mehr für
   eine Runde, werden die restlichen genommen und der Merker für diese Auswahl
@@ -183,7 +180,7 @@ npm run check:sw      # wurde VERSION in sw.js nach Änderungen in public/ hochg
 Die Tests in `test/` laufen in drei Projekten (Pixel 7, iPhone 13, Desktop Chrome):
 
 - `app.test.js`: Startseite, Anleitung, Spiel anlegen (Teamanzahl, Namen,
-  Zielpunkte), Rundenstart mit Deck-Auswahl je Runde (Vorauswahl, Persistenz,
+  Zielpunkte), Rundenstart mit Deck-Auswahl je Runde (Vorauswahl ohne Merken,
   Wechsel zwischen Runden), Punkteleiste, Rückfragen.
 - `wheel.test.js`: Walzen mit gemocktem `Math.random`: laufen beim Betreten von
   selbst an, Ergebnis unabhängig vom Stopp-Zeitpunkt, beide halten gemeinsam auf
@@ -195,7 +192,8 @@ Die Tests in `test/` laufen in drei Projekten (Pixel 7, iPhone 13, Desktop Chrom
   vollem Durchgang, Gleichstand, ein Team, „Nochmal“.
 - `persist.test.js`: Neuladen in jeder Phase, kaputter Local Storage je
   Eintrag, kaputte Runde ohne Punktverlust, keine Wiederholung der Kategorien.
-- `layout.test.js`: Hoch- und Querformat, Drehung, Safe Area, Kacheltexte und
+- `layout.test.js`: Hoch- und Querformat, Drehung, Safe Area, Kacheltexte so
+  groß wie möglich ohne Umbruch im Wort und ohne Layoutsprung beim Abhaken,
   Begriffe passen, Touch-Ziele, Barrierefreiheit (axe-core) auf jeder Ansicht.
 - `quality.test.js`: Markup, SEO (Canonical, Open Graph, robots.txt),
   Manifest, reduzierte Bewegung, Impressum, Offline-Betrieb, interne Verweise,

@@ -36,6 +36,53 @@ test.describe("Runde im Hochformat", () => {
   });
 });
 
+test.describe("Kacheltexte", () => {
+  const MIX = ["Land", "Zeitschrift oder Zeitung", "Etwas, das nichts kostet", "Etwas, das nicht ins Handgepäck darf", "Tier", "Comic- oder Zeichentrickfigur", "Wissenschaftler oder Wissenschaftlerin", "Etwas Kaltes"];
+
+  for (const [name, vp] of [["Hochformat", { width: 412, height: 915 }], ["Querformat", { width: 844, height: 390 }]]) {
+    test(`${name}: kurze Texte groß, lange umgebrochen statt winzig, kein Umbruch im Wort, Abhaken ändert nichts`, async ({ page }) => {
+      await page.setViewportSize(vp);
+      await seedGame(page, inPlay({ categories: MIX }));
+      await expect(page.locator("#play.active")).toBeVisible();
+      const info = () =>
+        page.$$eval("#tiles .tile", (ts) =>
+          ts.map((t) => {
+            const r = t.firstChild.getBoundingClientRect();
+            const size = parseFloat(t.style.fontSize);
+            return { text: t.firstChild.textContent, size, lines: Math.round(r.height / (size * 1.15)), width: Math.round(r.width) };
+          }),
+        );
+      const before = await info();
+      const byText = Object.fromEntries(before.map((t) => [t.text, t]));
+      expect(byText["Land"].size).toBeGreaterThanOrEqual(28); // kurze Texte nutzen die Kachel
+      expect(byText["Tier"].size).toBeGreaterThanOrEqual(28);
+      expect(byText["Zeitschrift oder Zeitung"].size).toBeGreaterThanOrEqual(18); // lange: umgebrochen, nicht winzig
+      expect(byText["Etwas, das nicht ins Handgepäck darf"].size).toBeGreaterThanOrEqual(14);
+      // Kein Umbruch mitten im Wort: jedes Wort liegt in genau einem Rechteck
+      const broken = await page.$$eval("#tiles .tile-text", (els) =>
+        els
+          .filter((e) => {
+            const text = e.textContent;
+            let pos = 0;
+            return text.split(" ").some((word) => {
+              const idx = text.indexOf(word, pos);
+              pos = idx + word.length;
+              const range = document.createRange();
+              range.setStart(e.firstChild, idx);
+              range.setEnd(e.firstChild, idx + word.length);
+              return range.getClientRects().length > 1;
+            });
+          })
+          .map((e) => e.textContent),
+      );
+      expect(broken).toEqual([]);
+      await expectTilesOk(page);
+      for (const t of await page.$$("#tiles .tile")) await t.click();
+      expect(await info()).toEqual(before); // Abhaken: Schriftgröße, Zeilen und Breite bleiben gleich
+    });
+  }
+});
+
 test.describe("Querformat und Drehung", () => {
   test.use({ viewport: { width: 844, height: 390 } });
 
