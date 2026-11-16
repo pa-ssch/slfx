@@ -152,12 +152,11 @@ test.describe("Interne Verweise", () => {
 });
 
 test.describe("Datenqualität", () => {
-  test("Decks: Mindestgrößen, keine leeren oder doppelten Einträge, kurze Nominalphrasen", () => {
+  test("Decks: Mindestgrößen, keine leeren oder doppelten Einträge je Deck, kurze Nominalphrasen", () => {
     expect(DEFAULT_ON).toEqual(["Normal"]);
-    expect(DECKS.Normal.length).toBeGreaterThanOrEqual(150);
-    expect(DECKS.NSFW.length).toBeGreaterThanOrEqual(40);
-    expect(DECKS.Weihnachten.length).toBeGreaterThanOrEqual(40);
-    const all = [];
+    expect(DECKS.Normal.length).toBeGreaterThanOrEqual(400);
+    for (const [deck, cats] of Object.entries(DECKS)) if (deck !== "Normal") expect(cats.length, deck).toBeGreaterThanOrEqual(40);
+    expect(Object.keys(DECKS).length).toBeGreaterThanOrEqual(10);
     for (const [deck, cats] of Object.entries(DECKS)) {
       expect(Array.isArray(cats), deck).toBe(true);
       for (const c of cats) {
@@ -167,10 +166,11 @@ test.describe("Datenqualität", () => {
         expect(c.length, `${deck}: zu lang: ${c}`).toBeLessThanOrEqual(60);
         expect(c[0], `${deck}: Großschreibung: ${c}`).toBe(c[0].toUpperCase());
       }
-      expect(new Set(cats).size, `${deck}: Duplikate`).toBe(cats.length);
-      all.push(...cats);
+      // Keine Doppelten im Deck, auch nicht bei anderer Schreibweise. Über Decks hinweg
+      // sind Doppelte erlaubt ("Tier" in Normal und Kinder), die App führt sie zusammen.
+      const norm = cats.map((c) => c.toLowerCase().replace(/[„“"]/g, "").replace(/\s+/g, " ").trim());
+      expect(new Set(norm).size, `${deck}: Duplikate`).toBe(cats.length);
     }
-    expect(new Set(all).size, "Duplikate über Decks hinweg").toBe(all.length);
   });
 
   test("Regeln: Werte sind plausibel und untereinander stimmig", () => {

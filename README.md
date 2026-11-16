@@ -125,13 +125,28 @@ Alle Kategorien stehen in `public/decks.js` im Objekt `DECKS`:
 
 ```js
 var DECKS = {
-  "Normal":      ["Stadt", "Land", ...],
-  "NSFW":        [...],
-  "Weihnachten": [...],
+  "Normal":          ["Stadt", "Land", ...],   // der Allrounder, allein vorangehakt
+  "Kinder":          [...],
+  "Experten":        [...],
+  "Wissen":          [...],
+  "Popkultur":       [...],
+  "Sport":           [...],
+  "Essen & Trinken": [...],
+  "Reisen & Welt":   [...],
+  "Natur & Tiere":   [...],
+  "Sprache":         [...],
+  "Büro & Arbeit":   [...],
+  "90er & Kindheit": [...],
+  "NSFW":            [...],
+  "Weihnachten":     [...],
+  "Halloween":       [...],
+  "Sommer":          [...],
   // Neues Deck einfach anhängen:
-  "Tiere":       ["Tier mit Fell", "Tier im Wasser", "Tier, das beißt"]
+  "Garten":          ["Gartengerät", "Etwas im Beet", "Etwas, das Schnecken fressen"]
 };
 ```
+
+Aktuell sind das rund 1.500 Kategorien, davon etwa 550 in „Normal“.
 
 Mehr ist nicht nötig. Die Checkbox am Rundenstart wird automatisch aus den
 Schlüsseln erzeugt, die Reihenfolge im Objekt ist die Anzeige-Reihenfolge.
@@ -140,9 +155,12 @@ Hinweise:
 
 - Kategorien sind kurze Nominalphrasen, zu denen es mit jedem gängigen
   Anfangsbuchstaben einen Begriff gibt („Etwas, das man im Keller findet“).
-  Eigene Texte, keine Übernahmen aus kommerziellen Spielen. Der Test
-  „Datenqualität“ prüft Mindestgrößen (Normal 150, andere 40), Duplikate,
-  Leerzeichen, Großschreibung und Länge.
+  Themen-Decks sind naturgemäß enger („Disney-Figur“ mit U), eine nicht
+  geschaffte Kachel kostet nur den Punkt. Eigene Texte, keine Übernahmen aus
+  kommerziellen Spielen. Der Test „Datenqualität“ prüft Mindestgrößen (Normal
+  400, andere 40), Doppelte innerhalb eines Decks, Leerzeichen, Großschreibung
+  und Länge. Dieselbe Kategorie darf in mehreren Decks stehen („Tier“ in Normal
+  und Kinder); sind beide gewählt, wird sie nur einmal gezogen.
 - Die Decks werden **jede Runde neu** gewählt, auf der Ansicht „Team X ist
   dran“. Vorangehakt sind jedes Mal nur die Decks aus der Liste `DEFAULT_ON` am
   Anfang von `public/decks.js` (aktuell nur „Normal“); die Auswahl wird nicht

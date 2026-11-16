@@ -156,7 +156,11 @@ test.describe("Querformat und Drehung", () => {
           return r.top >= bar - 0.5 && r.bottom <= innerHeight + 0.5 && r.left >= 0 && r.right <= innerWidth + 0.5;
         });
       }, sel);
-    expect(await within("#turnTeam, #readyBtn")).toBe(true);
+    // Der Rundenstart scrollt (viele Decks): Teamname oben sichtbar, "Bereit" nach dem Scrollen
+    expect(await within("#turnTeam")).toBe(true);
+    expect(await page.$eval("#turn", (s) => getComputedStyle(s).overflowY)).toBe("auto");
+    await page.locator("#readyBtn").scrollIntoViewIfNeeded();
+    expect(await within("#readyBtn")).toBe(true);
     await page.click("#readyBtn");
     expect(await within(".reel-box, #spinBtn")).toBe(true);
     await seedGame(page, makeGame({ phase: "score", round: makeRound({ mode: "normal", done: [true, false, false, false, false, false, false, false] }) }));

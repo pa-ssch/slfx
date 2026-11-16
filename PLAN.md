@@ -124,6 +124,11 @@ Spiellogik dieses Spiels.
 
 - [x] `public/rules.js` mit allen Werten
 - [x] `public/decks.js`: Normal (≥ 150), NSFW (≥ 40), Weihnachten (≥ 40), `DEFAULT_ON = ["Normal"]`
+- [x] Ausbau vom 16.11.2026: 16 Decks mit rund 1.500 Kategorien (Normal 549 nach Streichung
+      der schwächsten Einträge aus 804; Kinder, Experten, Wissen, Popkultur, Sport, Essen &
+      Trinken, Reisen & Welt, Natur & Tiere, Sprache, Büro & Arbeit, 90er & Kindheit, NSFW 86,
+      Weihnachten 66, Halloween, Sommer). Doppelte über Decks hinweg sind seitdem erlaubt,
+      innerhalb eines Decks nicht. Chips am Rundenstart kompakter, die Ansicht scrollt.
 
 ### Phase 3 – Spiellogik
 
