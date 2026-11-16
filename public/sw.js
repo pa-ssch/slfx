@@ -1,8 +1,8 @@
-// Service Worker für Stadt Land Fluss Extrem: macht die Seite offline nutzbar.
+// Service Worker für Stadt Land Flux: macht die Seite offline nutzbar.
 // Strategie: erst Netz, bei Fehler Cache. So sind Änderungen sofort sichtbar,
 // und ohne Empfang läuft die zuletzt geladene Version weiter.
 // Bei Änderungen an den Dateien unten die VERSION hochzählen.
-var VERSION = "slfx-v10";
+var VERSION = "slfx-v11";
 var FILES = [
   "./",
   "index.html",

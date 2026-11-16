@@ -19,7 +19,7 @@ test.describe("Best Practices im Markup", () => {
   test("SEO: Canonical, Open Graph, robots.txt", async ({ page, request }) => {
     await page.goto("/index.html");
     expect(await page.getAttribute('link[rel="canonical"]', "href")).toBe(SITE + "/");
-    expect(await page.getAttribute('meta[property="og:title"]', "content")).toContain("Stadt Land Fluss Extrem");
+    expect(await page.getAttribute('meta[property="og:title"]', "content")).toContain("Stadt Land Flux");
     expect(await page.getAttribute('meta[property="og:url"]', "content")).toBe(SITE + "/");
     expect(await page.getAttribute('meta[property="og:image"]', "content")).toBe(`${SITE}/icons/og-image.png`);
     expect((await page.getAttribute('meta[property="og:description"]', "content")).length).toBeGreaterThan(50);
@@ -34,7 +34,7 @@ test.describe("Best Practices im Markup", () => {
     const manifest = await request.get("/manifest.webmanifest");
     expect(manifest.ok()).toBe(true);
     const m = await manifest.json();
-    expect(m.name).toBe("Stadt Land Fluss Extrem");
+    expect(m.name).toBe("Stadt Land Flux");
     expect(m.display).toBe("standalone");
     for (const file of [...m.icons.map((i) => i.src), "icons/apple-touch-icon.png", "sw.js"]) {
       expect((await request.get("/" + file)).ok(), file).toBe(true);
@@ -68,7 +68,7 @@ test.describe("Impressum und Datenschutz", () => {
     await expect(page.locator('a[href="mailto:slfx@9xb.de"]').first()).toBeVisible();
     for (const s of [
       "9xb", "Silas Schnurr", "Theodor-Heuss-Straße 14", "77815 Bühl", "nicht kommerzielles Angebot", "Haftungsausschluss",
-      "Community", "nicht einzeln geprüft", "Abgrenzung", "Schmidt Spiele", "Stadt Land Fluss Extreme", "Stadt Land Vollpfosten", "Denkriesen", "Scattergories", "Hasbro", "Stadt Land BOOM!", "Kammergerichts Berlin",
+      "Community", "nicht einzeln geprüft", "Abgrenzung", "Schmidt Spiele", "Stadt Land Fluxe", "Stadt Land Vollpfosten", "Denkriesen", "Scattergories", "Hasbro", "Stadt Land BOOM!", "Kammergerichts Berlin",
       "Datenschutzerklärung", "GitHub Pages", "Local Storage", "slfx-game", "slfx-used", "slfx-install", "Patrick Hand",
     ]) {
       expect(text, s).toContain(s);

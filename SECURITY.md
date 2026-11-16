@@ -1,6 +1,6 @@
 # Security Policy
 
-Stadt Land Fluss Extrem runs entirely in the browser: there is no backend, no account
+Stadt Land Flux runs entirely in the browser: there is no backend, no account
 and no upload. The only state is the game in the browser's local storage.
 
 If you discover a vulnerability (for example in how local storage is parsed, the

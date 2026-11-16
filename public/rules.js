@@ -1,5 +1,5 @@
 // ============================================================
-// REGELN & ZAHLEN für Stadt Land Fluss Extrem
+// REGELN & ZAHLEN für Stadt Land Flux
 //
 // Alle Zeiten, Punkte, Gewichte und Grenzen stehen hier an einer Stelle.
 // Die Tests lesen dieselbe Datei, die README beschreibt die Werte.

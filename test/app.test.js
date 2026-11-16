@@ -11,7 +11,7 @@ test.describe("Laden und Startseite", () => {
     await page.goto("/index.html");
     await page.waitForTimeout(200);
     expect(errors).toEqual([]);
-    await expect(page).toHaveTitle("Stadt Land Fluss Extrem");
+    await expect(page).toHaveTitle("Stadt Land Flux");
     await expect(page.locator("#home.active")).toBeVisible();
     await expect(page.locator("#scorebar")).toBeHidden();
   });

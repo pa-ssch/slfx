@@ -2,8 +2,7 @@
   <!-- Vorschaubild für Links (Open Graph): Titel im Skizzen-Look mit drei Kacheln -->
   <rect width="1200" height="630" fill="#fff"/>
   <g font-family="Chalkboard SE, Comic Sans MS, Segoe Print, sans-serif" fill="#000" text-anchor="middle">
-    <text x="600" y="190" font-size="104" font-weight="700" letter-spacing="4">Stadt Land Fluss</text>
-    <text x="600" y="300" font-size="104" font-weight="700" letter-spacing="4">Extrem</text>
+    <text x="600" y="265" font-size="124" font-weight="700" letter-spacing="4">Stadt Land Flux</text>
     <text x="600" y="560" font-size="40">Ein Handy, bis zu fünf Teams, gegen die Uhr</text>
   </g>
   <path d="M250 330 C 320 312, 390 346, 460 328 C 530 310, 600 344, 670 326 C 740 308, 810 342, 880 324 C 920 314, 940 330, 950 326"

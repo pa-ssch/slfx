@@ -1,4 +1,4 @@
-# Stadt Land Fluss Extrem
+# Stadt Land Flux
 
 Partyspiel für ein geteiltes Handy: Teams spielen reihum gegen die Uhr, das Handy
 ersetzt Karten, Würfel und Spielbrett. Läuft direkt im Browser, ohne App, ohne
@@ -6,7 +6,7 @@ Anmeldung, auch offline.
 
 **Spielen:** [slfx.9xb.de](https://slfx.9xb.de)
 
-Stadt Land Fluss Extrem ist ein eigenständiges, nicht kommerzielles Projekt
+Stadt Land Flux ist ein eigenständiges, nicht kommerzielles Projekt
 und steht in keiner Verbindung zu „Stadt Land Fluss“ und „Stadt Land Fluss
 Extreme“ von Schmidt Spiele, „Stadt Land Vollpfosten“ von Denkriesen,
 „Scattergories“ von Hasbro, „Stadt Land BOOM!“ vom moses. Verlag oder anderen

@@ -1,7 +1,7 @@
 {
-  "name": "stadt-land-fluss-extrem",
+  "name": "stadt-land-flux",
   "version": "1.0.0",
-  "description": "Stadt Land Fluss Extrem – Partyspiel für ein geteiltes Handy. Statische Seite, kein Build-Schritt.",
+  "description": "Stadt Land Flux – Partyspiel für ein geteiltes Handy. Statische Seite, kein Build-Schritt.",
   "private": true,
   "license": "MIT",
   "scripts": {

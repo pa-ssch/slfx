@@ -1,4 +1,4 @@
-# Stadt Land Fluss Extrem – Plan
+# Stadt Land Flux – Plan
 
 Stand: 16.11.2026 (Phase 1 bis 5 umgesetzt, Rückmeldungen vom 7. und 8.11. eingearbeitet, Domain bestätigt, 372 Tests in drei Browser-Projekten grün, `npm run check:sw` grün; offen nur die Punkte unter „Offen“).
 
@@ -26,7 +26,10 @@ Spiellogik dieses Spiels.
 
 ## Entscheidungen
 
-1. **Name und Adressen.** Titel „Stadt Land Fluss Extrem“, Kurzname „SLF Extrem“.
+1. **Name und Adressen.** Titel „Stadt Land Flux“, Kurzname „SL Flux“ (umbenannt am
+   16.11.2026, vorher „Stadt Land Fluss Extrem“: Schmidt Spiele verkauft „Stadt Land Fluss
+   Extreme“; geprüft wurden X-treme, Xtra, XXL, X, Express, Flex, Reflex, Remix, Flux, nur
+   Flux und Reflex ohne Nähe zu bestehenden Produkten).
    Domain `slfx.9xb.de` (bestätigt am 16.11.2026, DNS in Arbeit; CNAME, Canonical, Open
    Graph, robots.txt), Kontakt `slfx@9xb.de` nach dem Muster `1clue@9xb.de` (Annahme, noch
    nicht bestätigt).
@@ -85,8 +88,9 @@ Spiellogik dieses Spiels.
     (auch als Edition „Extrem“), Hasbro „Scattergories“, moses. „Stadt Land BOOM!“. Der
     Name bleibt (Entscheidung vom 16.11.2026): Landgericht und Kammergericht Berlin haben
     2013 festgestellt, dass an „Stadt, Land, Fluss“ niemand Markenrechte erwerben kann.
-    Restrisiko: Die Ähnlichkeit des ganzen Titels mit „Stadt Land Fluss Extreme“ (möglicher
-    Werktitelschutz) ist davon nicht erfasst. Die Abgrenzung nennt alle vier Anbieter.
+    Wegen der Ähnlichkeit des alten Titels mit „Stadt Land Fluss Extreme“ (möglicher
+    Werktitelschutz) wurde am 16.11.2026 in „Stadt Land Flux“ umbenannt. Die Abgrenzung
+    nennt alle vier Anbieter.
 14. **Vorgehen.** Node nur für Tests. Nach jeder Phase `npm test` und `npm run check:sw`
     grün, Commit auf Deutsch. Die Aufgabenstellung `stadt-land-fluss-extrem-prompt.md` bleibt
     unversioniert.

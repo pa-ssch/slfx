@@ -1,5 +1,5 @@
 // ============================================================
-// DECKS & KATEGORIEN für Stadt Land Fluss Extrem
+// DECKS & KATEGORIEN für Stadt Land Flux
 //
 // Neues Deck ergänzen: einfach einen weiteren Eintrag anlegen,
 //   "Mein Deck": ["Kategorie", "Kategorie", ...],
