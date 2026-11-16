@@ -156,7 +156,7 @@ test.describe("Datenqualität", () => {
     expect(DEFAULT_ON).toEqual(["Normal"]);
     expect(DECKS.Normal.length).toBeGreaterThanOrEqual(400);
     for (const [deck, cats] of Object.entries(DECKS)) if (deck !== "Normal") expect(cats.length, deck).toBeGreaterThanOrEqual(40);
-    expect(Object.keys(DECKS).length).toBeGreaterThanOrEqual(10);
+    expect(Object.keys(DECKS).length).toBeGreaterThanOrEqual(3);
     for (const [deck, cats] of Object.entries(DECKS)) {
       expect(Array.isArray(cats), deck).toBe(true);
       for (const c of cats) {

@@ -132,6 +132,9 @@ Spiellogik dieses Spiels.
 - [x] Rückmeldung vom 16.11.2026, weniger Decks: Wissen, Essen & Trinken, Reisen & Welt,
       Natur & Tiere und Sprache in Normal aufgegangen (71 exakte und 75 inhaltliche Doppelte
       gestrichen). 11 Decks, 1.372 Kategorien, Normal 734.
+- [x] Zweite Runde am 16.11.2026: Kinder, Experten, Popkultur, Sport, Büro & Arbeit,
+      90er & Kindheit und Sommer ebenfalls in Normal (84 exakte und 89 inhaltliche Doppelte
+      gestrichen). Es bleiben vier Decks: Normal, NSFW, Weihnachten, Halloween.
 
 ### Phase 3 – Spiellogik
 

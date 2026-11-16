@@ -125,24 +125,20 @@ Alle Kategorien stehen in `public/decks.js` im Objekt `DECKS`:
 
 ```js
 var DECKS = {
-  "Normal":          ["Stadt", "Land", ...],   // der Allrounder, allein vorangehakt
-  "Kinder":          [...],
-  "Experten":        [...],
-  "Popkultur":       [...],
-  "Sport":           [...],
-  "Büro & Arbeit":   [...],
-  "90er & Kindheit": [...],
-  "NSFW":            [...],
-  "Weihnachten":     [...],
-  "Halloween":       [...],
-  "Sommer":          [...],
+  "Normal":      ["Stadt", "Land", ...],   // der Allrounder, allein vorangehakt
+  "NSFW":        [...],
+  "Weihnachten": [...],
+  "Halloween":   [...],
   // Neues Deck einfach anhängen:
-  "Garten":          ["Gartengerät", "Etwas im Beet", "Etwas, das Schnecken fressen"]
+  "Garten":      ["Gartengerät", "Etwas im Beet", "Etwas, das Schnecken fressen"]
 };
 ```
 
-Aktuell sind das rund 1.370 Kategorien in 11 Decks, davon rund 730 in „Normal“
-(Allgemeinwissen, Essen, Reisen, Natur und Sprache sind dort enthalten).
+Aktuell sind das rund 1.200 Kategorien in vier Decks, davon rund 1.000 in
+„Normal“: Alltag, Wissen, Essen, Reisen, Natur, Sprache, Kinder, Experten,
+Popkultur, Sport, Büro und Kindheit stecken alle dort drin. Eigene Decks gibt es
+nur für Inhalte, die man bewusst dazuschalten will (NSFW) oder die zur
+Jahreszeit passen.
 
 Mehr ist nicht nötig. Die Checkbox am Rundenstart wird automatisch aus den
 Schlüsseln erzeugt, die Reihenfolge im Objekt ist die Anzeige-Reihenfolge.
@@ -151,8 +147,8 @@ Hinweise:
 
 - Kategorien sind kurze Nominalphrasen, zu denen es mit jedem gängigen
   Anfangsbuchstaben einen Begriff gibt („Etwas, das man im Keller findet“).
-  Themen-Decks sind naturgemäß enger („Disney-Figur“ mit U), eine nicht
-  geschaffte Kachel kostet nur den Punkt. Eigene Texte, keine Übernahmen aus
+  Manche Kategorien sind naturgemäß enger („Komponist oder Komponistin“ mit U),
+  eine nicht geschaffte Kachel kostet nur den Punkt. Eigene Texte, keine Übernahmen aus
   kommerziellen Spielen. Der Test „Datenqualität“ prüft Mindestgrößen (Normal
   400, andere 40), Doppelte innerhalb eines Decks, Leerzeichen, Großschreibung
   und Länge. Dieselbe Kategorie darf in mehreren Decks stehen („Tier“ in Normal
