@@ -1,6 +1,6 @@
 # Stadt Land Fluss Extrem – Plan
 
-Stand: 8.11.2026 (Phase 1 bis 5 umgesetzt, Rückmeldungen vom 7. und 8.11. eingearbeitet, 366 Tests in drei Browser-Projekten grün, `npm run check:sw` grün; offen nur die Punkte unter „Offen“).
+Stand: 16.11.2026 (Phase 1 bis 5 umgesetzt, Rückmeldungen vom 7. und 8.11. eingearbeitet, Domain bestätigt, 372 Tests in drei Browser-Projekten grün, `npm run check:sw` grün; offen nur die Punkte unter „Offen“).
 
 ## Ziel
 
@@ -27,9 +27,9 @@ Spiellogik dieses Spiels.
 ## Entscheidungen
 
 1. **Name und Adressen.** Titel „Stadt Land Fluss Extrem“, Kurzname „SLF Extrem“.
-   Domain-Platzhalter `slfx.9xb.de` (CNAME, Canonical, Open Graph, robots.txt), Kontakt
-   `slfx@9xb.de` nach dem Muster `1clue@9xb.de`. Beides steht an wenigen Stellen und wird
-   getauscht, sobald Repo-Name und Domain feststehen.
+   Domain `slfx.9xb.de` (bestätigt am 16.11.2026, DNS in Arbeit; CNAME, Canonical, Open
+   Graph, robots.txt), Kontakt `slfx@9xb.de` nach dem Muster `1clue@9xb.de` (Annahme, noch
+   nicht bestätigt).
 2. **Konstanten an einer Stelle.** `public/rules.js` (globale Variable `RULES`) enthält alle
    Zahlen: Teamgrenzen, Namenslänge, Zielpunkte, Buchstabengewichte, Modi mit Zeit, Punkten,
    Gewicht und Text, Kategorien je Runde, Walzen-Zeiten. Die Tests lesen dieselbe Datei
@@ -143,11 +143,12 @@ Spiellogik dieses Spiels.
 
 ## Offen (von außen zu liefern)
 
-- [ ] Repo-Name und Domain; dann `public/CNAME`, Canonical/Open Graph in `index.html`, `robots.txt`, `playwright.live.config.js`, README, Impressum und `SECURITY.md` anpassen.
+- [x] Domain `slfx.9xb.de` bestätigt (16.11.2026), überall eingetragen.
+- [ ] DNS für `slfx.9xb.de` (in Arbeit): A-Records auf GitHub Pages bzw. CNAME, dann Pages mit Custom Domain und „Enforce HTTPS“; danach `npm run test:live` und der Workflow „Live-Check“.
+- [ ] GitHub-Repo anlegen (Name noch offen) und Pages per Workflow aktivieren.
 - [ ] Postfach `slfx@9xb.de` anlegen oder Adresse ändern.
 - [ ] Punkte- und Zeitwerte nach den ersten Spielabenden in `public/rules.js` nachjustieren.
 - [ ] Auf echten Geräten gegenprüfen (Wake Lock, Vibration, Safe Area, Walzen-Animation auf schwachen Handys).
-- [ ] GitHub-Repo anlegen, Pages aktivieren, DNS; danach `npm run test:live` und der Workflow „Live-Check“.
 
 ## Annahmen, die beim Bau getroffen wurden
 

@@ -240,10 +240,9 @@ kompromittiertes Action-Release nicht unbemerkt etwas anderes veröffentlichen
 kann. Dependabot (`.github/dependabot.yml`) hält die SHAs und die
 Test-Werkzeuge wöchentlich aktuell.
 
-Domain und Kontaktadresse (`slfx.9xb.de`, `slfx@9xb.de`) sind Platzhalter, bis
-Repo-Name und Domain feststehen; sie stehen in `public/CNAME`, `index.html`
-(Canonical, Open Graph), `robots.txt`, `impressum.html`,
-`playwright.live.config.js`, `SECURITY.md` und dieser README.
+Die Domain `slfx.9xb.de` steht in `public/CNAME`, `index.html` (Canonical, Open
+Graph), `robots.txt`, `playwright.live.config.js` und dieser README; die
+Kontaktadresse `slfx@9xb.de` in `impressum.html`, `SECURITY.md` und dieser README.
 
 ## Lizenz
 
