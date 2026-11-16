@@ -128,13 +128,8 @@ var DECKS = {
   "Normal":          ["Stadt", "Land", ...],   // der Allrounder, allein vorangehakt
   "Kinder":          [...],
   "Experten":        [...],
-  "Wissen":          [...],
   "Popkultur":       [...],
   "Sport":           [...],
-  "Essen & Trinken": [...],
-  "Reisen & Welt":   [...],
-  "Natur & Tiere":   [...],
-  "Sprache":         [...],
   "Büro & Arbeit":   [...],
   "90er & Kindheit": [...],
   "NSFW":            [...],
@@ -146,7 +141,8 @@ var DECKS = {
 };
 ```
 
-Aktuell sind das rund 1.500 Kategorien, davon etwa 550 in „Normal“.
+Aktuell sind das rund 1.370 Kategorien in 11 Decks, davon rund 730 in „Normal“
+(Allgemeinwissen, Essen, Reisen, Natur und Sprache sind dort enthalten).
 
 Mehr ist nicht nötig. Die Checkbox am Rundenstart wird automatisch aus den
 Schlüsseln erzeugt, die Reihenfolge im Objekt ist die Anzeige-Reihenfolge.

@@ -129,6 +129,9 @@ Spiellogik dieses Spiels.
       Trinken, Reisen & Welt, Natur & Tiere, Sprache, Büro & Arbeit, 90er & Kindheit, NSFW 86,
       Weihnachten 66, Halloween, Sommer). Doppelte über Decks hinweg sind seitdem erlaubt,
       innerhalb eines Decks nicht. Chips am Rundenstart kompakter, die Ansicht scrollt.
+- [x] Rückmeldung vom 16.11.2026, weniger Decks: Wissen, Essen & Trinken, Reisen & Welt,
+      Natur & Tiere und Sprache in Normal aufgegangen (71 exakte und 75 inhaltliche Doppelte
+      gestrichen). 11 Decks, 1.372 Kategorien, Normal 734.
 
 ### Phase 3 – Spiellogik
 
