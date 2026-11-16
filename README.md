@@ -6,11 +6,15 @@ Anmeldung, auch offline.
 
 **Spielen:** [slfx.9xb.de](https://slfx.9xb.de)
 
-Stadt Land Fluss Extrem ist ein eigenständiges Projekt und steht in keiner
-Verbindung zu „Stadt Land Vollpfosten“, dem Verlag Denkriesen oder anderen
+Stadt Land Fluss Extrem ist ein eigenständiges, nicht kommerzielles Projekt
+und steht in keiner Verbindung zu „Stadt Land Fluss“ und „Stadt Land Fluss
+Extreme“ von Schmidt Spiele, „Stadt Land Vollpfosten“ von Denkriesen,
+„Scattergories“ von Hasbro, „Stadt Land BOOM!“ vom moses. Verlag oder anderen
 Anbietern von Stadt-Land-Fluss-Spielen und deren Rechteinhabern. Kategorien,
-Modi, Design und Oberfläche sind eigene Arbeit; das Spielprinzip
-Stadt-Land-Fluss selbst ist gemeinfrei.
+Modi, Design und Oberfläche sind eigene Arbeit. „Stadt, Land, Fluss“ ist ein
+seit Generationen gespielter Klassiker, an dem nach den Feststellungen des
+Landgerichts Berlin und des Kammergerichts Berlin (2013) niemand Markenrechte
+erwerben kann.
 
 ## So geht's
 

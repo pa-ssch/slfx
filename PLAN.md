@@ -79,9 +79,14 @@ Spiellogik dieses Spiels.
     dass sie in die Kachel passen (mindestens 44 px hoch).
 12. **SEO** wie Level 100, aber ohne Sprachen: Description, Canonical, Open Graph mit
     `icons/og-image.png`, `robots.txt`. Keine Sitemap (eine Seite).
-13. **Rechtliches.** Eigener Name, eigene Kategorie- und Modustexte, Abgrenzungssatz in
-    README und Impressum (keine Verbindung zu „Stadt Land Vollpfosten“, Denkriesen oder
-    anderen Rechteinhabern; die Mechanik Stadt-Land-Fluss ist gemeinfrei).
+13. **Rechtliches.** Eigene Kategorie- und Modustexte, Abgrenzungssatz in README und
+    Impressum. Recherche vom 16.11.2026: Schmidt Spiele verkauft seit 2016 „Stadt Land
+    Fluss® Extreme“ (Kategorienkarten plus Sanduhr), Denkriesen „Stadt Land Vollpfosten“
+    (auch als Edition „Extrem“), Hasbro „Scattergories“, moses. „Stadt Land BOOM!“. Der
+    Name bleibt (Entscheidung vom 16.11.2026): Landgericht und Kammergericht Berlin haben
+    2013 festgestellt, dass an „Stadt, Land, Fluss“ niemand Markenrechte erwerben kann.
+    Restrisiko: Die Ähnlichkeit des ganzen Titels mit „Stadt Land Fluss Extreme“ (möglicher
+    Werktitelschutz) ist davon nicht erfasst. Die Abgrenzung nennt alle vier Anbieter.
 14. **Vorgehen.** Node nur für Tests. Nach jeder Phase `npm test` und `npm run check:sw`
     grün, Commit auf Deutsch. Die Aufgabenstellung `stadt-land-fluss-extrem-prompt.md` bleibt
     unversioniert.
