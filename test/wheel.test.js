@@ -3,8 +3,7 @@
 const { test, expect } = require("@playwright/test");
 const {
   RULES, WHEEL_LETTERS, LETTERS, DECKS, categoriesOf, wheelModes, modeLabel, expectedLetter, expectedMode,
-  watchErrors, fixRandom, setRandom, readGame, makeGame, seedGame, selectDecks, spinInstant, reelOffset,
-} = require("./helpers");
+  watchErrors, fixRandom, setRandom, readGame, makeGame, seedGame, selectDecks, spinInstant, reelOffset, installClock } = require("./helpers");
 
 const W = RULES.WHEEL;
 const RUNOUT_MS = W.MAX_RUNOUT_MS + 500;
@@ -33,7 +32,7 @@ const transformOf = (page, id) => page.evaluate((id) => document.getElementById(
 test.describe("Walze mit Animation", () => {
   test("beide Walzen laufen beim Betreten von selbst an, Button heißt „Stopp“", async ({ page }) => {
     await openTurn(page);
-    await page.clock.install();
+    await installClock(page);
     await page.click("#readyBtn");
     await expect(page.locator("#spinBtn")).toHaveText("Stopp");
     await expect(page.locator("#spinBtn")).toBeEnabled();
@@ -52,7 +51,7 @@ test.describe("Walze mit Animation", () => {
     const results = [];
     for (const delay of [200, 2500]) {
       await openTurn(page);
-      await page.clock.install();
+      await installClock(page);
       await page.click("#readyBtn");
       await page.clock.runFor(delay);
       await page.click("#spinBtn");
@@ -72,7 +71,7 @@ test.describe("Walze mit Animation", () => {
   test("beide Walzen laufen aus und halten gemeinsam auf dem Ergebnis", async ({ page }) => {
     await fixRandom(page, 0.6);
     await openTurn(page);
-    await page.clock.install();
+    await installClock(page);
     await page.click("#readyBtn");
     await page.clock.runFor(500);
     await page.click("#spinBtn");
@@ -120,7 +119,7 @@ test.describe("Walze mit Animation", () => {
 
   test("während der Drehung liegen die Zellen immer auf dem Raster der Markierung", async ({ page }) => {
     await openTurn(page);
-    await page.clock.install();
+    await installClock(page);
     await page.click("#readyBtn");
     for (let i = 0; i < 5; i++) {
       await page.clock.runFor(137);
@@ -142,7 +141,7 @@ test.describe("Walze mit Animation", () => {
   test("Auslauf beginnt mit dem Tempo des Drehens und wird nur langsamer, nie schneller", async ({ page }) => {
     await fixRandom(page, 0.5);
     await openTurn(page);
-    await page.clock.install();
+    await installClock(page);
     await page.click("#readyBtn");
     // Jede Transform-Änderung mit ihrem Zeitstempel mitschreiben: ein Eintrag je Frame
     await page.evaluate(() => {
@@ -201,7 +200,7 @@ test.describe("Walze mit Animation", () => {
   test("ohne Tipp stoppt die Walze nach der Höchstdauer von selbst", async ({ page }) => {
     await fixRandom(page, 0.2);
     await openTurn(page);
-    await page.clock.install();
+    await installClock(page);
     await page.click("#readyBtn");
     await page.clock.runFor(W.AUTO_STOP_MS - 100);
     await expect(page.locator("#spinBtn")).toBeEnabled();

@@ -1,6 +1,6 @@
 // Runde spielen: Countdown, Kacheln, Timer, jede Modus-Logik, Punkte, Spielende
 const { test, expect } = require("@playwright/test");
-const { RULES, N, DECKS, KEYS, watchErrors, readGame, makeGame, makeRound, seedGame, startRound, checkTiles } = require("./helpers");
+const { RULES, N, DECKS, KEYS, watchErrors, readGame, makeGame, makeRound, seedGame, startRound, checkTiles, installClock } = require("./helpers");
 
 const M = RULES.MODES;
 const CATS = DECKS.Normal.slice(0, N);
@@ -11,7 +11,7 @@ async function playRound(page, game) {
   await page.click("#resumeBtn");
   await expect(page.locator("#wheel.active")).toBeVisible();
   await expect(page.locator("#goBtn")).toBeVisible();
-  await page.clock.install();
+  await installClock(page);
   await startRound(page);
 }
 const ready = ({ round, ...o } = {}) => makeGame({ phase: "ready", ...o, round: makeRound({ categories: CATS, ...round }) });
@@ -23,7 +23,7 @@ test.describe("Countdown und Runde", () => {
     const errors = watchErrors(page);
     await seedGame(page, ready({ round: { letter: "K", mode: "normal" } }));
     await page.click("#resumeBtn");
-    await page.clock.install();
+    await installClock(page);
     await page.click("#goBtn");
     await expect(page.locator("#countdown.active")).toBeVisible();
     await expect(page.locator("#countNum")).toHaveText("3");

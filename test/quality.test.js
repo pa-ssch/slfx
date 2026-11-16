@@ -68,7 +68,7 @@ test.describe("Impressum und Datenschutz", () => {
     await expect(page.locator('a[href="mailto:slfx@9xb.de"]').first()).toBeVisible();
     for (const s of [
       "9xb", "Silas Schnurr", "Theodor-Heuss-Straße 14", "77815 Bühl", "nicht kommerzielles Angebot", "Haftungsausschluss",
-      "Community", "nicht einzeln geprüft", "Abgrenzung", "Schmidt Spiele", "Stadt Land Fluxe", "Stadt Land Vollpfosten", "Denkriesen", "Scattergories", "Hasbro", "Stadt Land BOOM!", "Kammergerichts Berlin",
+      "Community", "nicht einzeln geprüft", "Abgrenzung", "Schmidt Spiele", "Stadt Land Fluss Extreme", "Stadt Land Vollpfosten", "Denkriesen", "Scattergories", "Hasbro", "Stadt Land BOOM!", "Kammergerichts Berlin",
       "Datenschutzerklärung", "GitHub Pages", "Local Storage", "slfx-game", "slfx-used", "slfx-install", "Patrick Hand",
     ]) {
       expect(text, s).toContain(s);

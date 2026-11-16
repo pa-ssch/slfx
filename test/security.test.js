@@ -3,7 +3,7 @@
 const { test, expect } = require("@playwright/test");
 const fs = require("fs");
 const path = require("path");
-const { PUBLIC, KEYS, listFiles, spinInstant, startRound, RULES } = require("./helpers");
+const { PUBLIC, KEYS, listFiles, spinInstant, startRound, RULES, installClock } = require("./helpers");
 
 // Kompletter Spieldurchlauf über alle Ansichten, inklusive Neuladen und Impressum
 async function playThrough(page) {
@@ -15,7 +15,7 @@ async function playThrough(page) {
   const second = page.locator("#decks input").nth(1);
   await second.check();
   await spinInstant(page);
-  await page.clock.install();
+  await installClock(page);
   await startRound(page);
   if (await page.locator("#everyone.active").isVisible()) {
     for (let i = 0; i < RULES.CATEGORIES_PER_ROUND; i++) await page.click("#evSkip");

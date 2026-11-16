@@ -136,7 +136,15 @@ async function spinInstant(page) {
   return readGame(page);
 }
 
-// "Los" tippen und den Countdown mit beschleunigter Uhr durchlaufen (page.clock muss installiert sein)
+// Simulierte Uhr installieren und anhalten: Danach vergeht Zeit nur noch per page.clock.runFor.
+// Ohne pauseAt liefe die Uhr zusätzlich mit der Echtzeit weiter, und auf langsamen CI-Maschinen
+// kippen Prüfungen wie "kurz vor dem Auto-Stopp noch aktiv".
+async function installClock(page) {
+  await page.clock.install();
+  await page.clock.pauseAt(Date.now());
+}
+
+// "Los" tippen und den Countdown mit beschleunigter Uhr durchlaufen (installClock muss gelaufen sein)
 async function startRound(page) {
   await page.click("#goBtn");
   await expect(page.locator("#countdown.active")).toBeVisible();
@@ -209,5 +217,5 @@ module.exports = {
   PUBLIC, RULES, DECKS, DEFAULT_ON, KEYS, N, LETTERS, WHEEL_LETTERS,
   wheelModes, modeLabel, categoriesOf, expectedLetter, expectedMode,
   watchErrors, fixRandom, setRandom, readGame, readUsed, makeRound, makeGame, seedGame, createGame,
-  selectDecks, spinInstant, startRound, fits, checkTiles, listFiles, reelOffset,
+  selectDecks, spinInstant, startRound, installClock, fits, checkTiles, listFiles, reelOffset,
 };
